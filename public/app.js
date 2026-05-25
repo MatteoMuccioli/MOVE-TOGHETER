@@ -318,9 +318,12 @@ function buildChallengeCard(ch) {
                 <div style="height:100%;width:${ch.progress}%;background:${ch.completed?'#10B981':'#FF6B35'};border-radius:9999px;transition:width 1s ease;"></div>
             </div>
         </div>` : '';
+    const isLoggedIn = !!localStorage.getItem('mt_token');
     const btn = ch.completed
         ? `<span style="font-size:11px;background:rgba(16,185,129,.2);color:#6EE7B7;font-weight:700;padding:4px 12px;border-radius:9999px;display:flex;align-items:center;gap:4px;"><i class="fas fa-check"></i>Completata</span>`
-        : `<button onclick="completeChallenge(${ch.id})" style="font-size:11px;background:#FF6B35;color:white;font-weight:700;padding:6px 14px;border-radius:9999px;border:none;cursor:pointer;" onmouseover="this.style.background='#E55A25'" onmouseout="this.style.background='#FF6B35'">Segna completata ✓</button>`;
+        : isLoggedIn
+            ? `<button onclick="completeChallenge(${ch.id})" style="font-size:11px;background:#FF6B35;color:white;font-weight:700;padding:6px 14px;border-radius:9999px;border:none;cursor:pointer;" onmouseover="this.style.background='#E55A25'" onmouseout="this.style.background='#FF6B35'">Segna completata ✓</button>`
+            : `<a href="#" onclick="openAuthModal('login');return false;" style="font-size:11px;color:rgba(255,255,255,.4);font-weight:600;display:flex;align-items:center;gap:4px;"><i class="fas fa-lock" style="font-size:10px;"></i>Accedi per partecipare</a>`;
     card.innerHTML = `
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;">
             <div style="width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;">
@@ -423,12 +426,28 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
    ══════════════════════════════════════════════ */
 function renderForm(preGroup, preOffer) {
     const box = document.getElementById('modal-box');
+
+    // Dati utente loggato (per pre-compilare il form)
+    let lu = null;
+    try { lu = JSON.parse(localStorage.getItem('mt_user') || 'null'); } catch(_) {}
+    const isLogged = !!localStorage.getItem('mt_token');
+
     const gymOptions = GYMS.map(g =>
-        `<option value="${g.id}" data-name="${g.name}" data-address="${g.address}" ${selectedGym&&selectedGym.id===g.id?'selected':''}>${g.name}</option>`
+        `<option value="${g.id}" data-name="${g.name}" data-address="${g.address}" ${(selectedGym&&selectedGym.id===g.id)||(lu&&lu.gymId===g.id)?'selected':''}>${g.name}</option>`
     ).join('');
     const offerOptions = EVENTS.map(e =>
         `<option value="${e.title}" ${preOffer===e.title?'selected':''}>${e.title}</option>`
     ).join('');
+
+    const loggedBanner = isLogged && lu ? `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,rgba(255,107,53,.08),rgba(31,107,82,.06));border:1px solid rgba(255,107,53,.2);border-radius:12px;margin-bottom:4px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#FF6B35;display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:.9rem;flex-shrink:0;">${(lu.nome||'?')[0].toUpperCase()}</div>
+            <div>
+                <p style="margin:0;font-weight:700;font-size:13px;color:#111827;">${lu.nome} ${lu.cognome||''}</p>
+                <p style="margin:0;font-size:11px;color:#6B7280;">Dati pre-compilati dal tuo account</p>
+            </div>
+            <i class="fas fa-check-circle" style="color:#10B981;margin-left:auto;font-size:1rem;"></i>
+        </div>` : '';
 
     box.innerHTML = `
     <div style="position:sticky;top:0;z-index:10;background:white;border-bottom:1px solid #f3f4f6;border-radius:24px 24px 0 0;padding:22px 24px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
@@ -439,13 +458,14 @@ function renderForm(preGroup, preOffer) {
         <button onclick="closeModal()" style="width:38px;height:38px;border-radius:10px;background:#F3F4F6;border:none;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;color:#6B7280;margin-top:2px;" onmouseover="this.style.background='#E5E7EB'" onmouseout="this.style.background='#F3F4F6'">✕</button>
     </div>
     <form id="booking-form" onsubmit="handleSubmit(event)" style="padding:24px;display:flex;flex-direction:column;gap:18px;">
-        <div><label class="form-label">Nome e Cognome *</label><input type="text" id="f-name" class="form-input" placeholder="Es. Marco Rossi" required autocomplete="name"></div>
+        ${loggedBanner}
+        <div><label class="form-label">Nome e Cognome *</label><input type="text" id="f-name" class="form-input" placeholder="Es. Marco Rossi" required autocomplete="name" value="${lu ? (lu.nome||'') + (lu.cognome ? ' '+lu.cognome : '') : ''}"></div>
         <div>
             <label class="form-label">La tua Età *</label>
-            <input type="number" id="f-age" class="form-input" placeholder="${preGroup==='senior'?'Es. 65':preGroup==='giovani'?'Es. 17':'Es. 17 oppure 65'}" min="10" max="99" required>
+            <input type="number" id="f-age" class="form-input" placeholder="${preGroup==='senior'?'Es. 65':preGroup==='giovani'?'Es. 17':'Es. 17 oppure 65'}" min="10" max="99" required value="${lu&&lu.eta ? lu.eta : ''}">
             <p id="age-hint" style="font-size:12px;margin-top:5px;min-height:16px;"></p>
         </div>
-        <div><label class="form-label">Email *</label><input type="email" id="f-email" class="form-input" placeholder="la.tua@email.com" required autocomplete="email"></div>
+        <div><label class="form-label">Email *</label><input type="email" id="f-email" class="form-input" placeholder="la.tua@email.com" required autocomplete="email" value="${lu&&lu.email ? lu.email : ''}"></div>
         <div>
             <label class="form-label">Sede ANIF preferita *</label>
             <select id="f-gym" class="form-input" required>
@@ -465,20 +485,23 @@ function renderForm(preGroup, preOffer) {
                 <a href="https://anifeurowellness.it/" target="_blank" style="color:#FF6B35;font-weight:600;">Privacy Policy ANIF</a>
             </label>
         </div>
-        <button type="submit" id="submit-btn" style="width:100%;padding:16px;background:#FF6B35;color:white;border:none;border-radius:14px;font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 20px rgba(255,107,53,.35);transition:all .2s;" onmouseover="this.style.background='#E55A25'" onmouseout="this.style.background='#FF6B35'">
+        <button type="submit" id="submit-btn" style="width:100%;padding:16px;background:linear-gradient(135deg,#FF6B35,#E55A25);color:white;border:none;border-radius:14px;font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 24px rgba(255,107,53,.4);transition:all .2s;" onmouseover="this.style.boxShadow='0 8px 32px rgba(255,107,53,.55)'" onmouseout="this.style.boxShadow='0 6px 24px rgba(255,107,53,.4)'">
             <i class="fas fa-ticket-alt"></i>Genera il mio Coupon Digitale<i class="fas fa-arrow-right" style="font-size:.8rem;opacity:.7;"></i>
         </button>
     </form>`;
 
-    // Age hint
-    document.getElementById('f-age').addEventListener('input', function () {
+    // Age hint auto-trigger se pre-compilato
+    const ageHintFn = function () {
         const hint = document.getElementById('age-hint');
         const v = parseInt(this.value);
         if (v >= 16 && v <= 20) { hint.textContent = '✅ Fascia Giovani (16-20) – accedi alle offerte dedicate!'; hint.style.cssText = 'font-size:12px;margin-top:5px;color:#FF6B35;font-weight:600;'; }
         else if (v >= 60)       { hint.textContent = '✅ Fascia Over 60 – accedi ai percorsi per la longevità attiva!'; hint.style.cssText = 'font-size:12px;margin-top:5px;color:#1F6B52;font-weight:600;'; }
         else if (v > 0)         { hint.textContent = '💡 Anche le altre fasce partecipano all\'Open Day!'; hint.style.cssText = 'font-size:12px;margin-top:5px;color:#9CA3AF;font-weight:400;'; }
         else                    { hint.textContent = ''; }
-    });
+    };
+    const ageEl = document.getElementById('f-age');
+    ageEl.addEventListener('input', ageHintFn);
+    if (lu && lu.eta) ageHintFn.call(ageEl);
 }
 
 /* ══════════════════════════════════════════════
@@ -503,9 +526,12 @@ async function handleSubmit(e) {
     btn.innerHTML = `<span class="spinner"></span> Invio in corso...`;
 
     try {
+        const token = localStorage.getItem('mt_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
         const res  = await fetch('/api/prenota', {
             method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             body:    JSON.stringify({ name, age, email, gymId, gymName, gymAddress: gymAddr, offer })
         });
 

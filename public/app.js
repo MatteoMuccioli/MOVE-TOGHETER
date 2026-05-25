@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavbar();
     initMobileMenu();
     renderEvents();
+    loadChallengeState();
     renderChallenges();
     renderBadges();
     initMap();
@@ -317,7 +318,7 @@ function buildChallengeCard(ch) {
         </div>` : '';
     const btn = ch.completed
         ? `<span style="font-size:11px;background:rgba(16,185,129,.2);color:#6EE7B7;font-weight:700;padding:4px 12px;border-radius:9999px;display:flex;align-items:center;gap:4px;"><i class="fas fa-check"></i>Completata</span>`
-        : `<button onclick="openModal()" style="font-size:11px;background:#FF6B35;color:white;font-weight:700;padding:6px 14px;border-radius:9999px;border:none;cursor:pointer;" onmouseover="this.style.background='#E55A25'" onmouseout="this.style.background='#FF6B35'">Inizia →</button>`;
+        : `<button onclick="completeChallenge(${ch.id})" style="font-size:11px;background:#FF6B35;color:white;font-weight:700;padding:6px 14px;border-radius:9999px;border:none;cursor:pointer;" onmouseover="this.style.background='#E55A25'" onmouseout="this.style.background='#FF6B35'">Segna completata ✓</button>`;
     card.innerHTML = `
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;">
             <div style="width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;">
@@ -342,6 +343,39 @@ function buildChallengeCard(ch) {
             <i class="fas fa-gift"></i><span>Premio: ${ch.reward}</span>
         </div>`;
     return card;
+}
+
+function loadChallengeState() {
+    try {
+        const saved = JSON.parse(localStorage.getItem('mt_challenges') || '{}');
+        CHALLENGES.forEach(ch => {
+            if (saved[ch.id]) {
+                ch.completed = true;
+                ch.progress  = 100;
+            }
+        });
+    } catch (_) {}
+}
+
+function completeChallenge(id) {
+    const ch = CHALLENGES.find(c => c.id === id);
+    if (!ch || ch.completed) return;
+
+    ch.completed = true;
+    ch.progress  = 100;
+
+    try {
+        const saved = JSON.parse(localStorage.getItem('mt_challenges') || '{}');
+        saved[id] = true;
+        localStorage.setItem('mt_challenges', JSON.stringify(saved));
+    } catch (_) {}
+
+    const badge = BADGES.find(b => b.name === ch.badgeName);
+    if (badge) badge.unlocked = true;
+
+    renderChallenges();
+    renderBadges();
+    showToast(`+${ch.xp} XP guadagnati! 🎉`, `Badge sbloccato: ${ch.badge} ${ch.badgeName}`, 'success');
 }
 
 /* ══════════════════════════════════════════════

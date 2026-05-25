@@ -461,7 +461,7 @@
                         <p class="text-white/60 text-xs mt-0.5">${cp.palestra || ''}</p>
                     </div>
                     <div class="flex justify-between items-center">
-                        <p class="text-white/60 text-xs">Scade: ${cp.scadenza || '31/12/2025'}</p>
+                        <p class="text-white/60 text-xs">Scade: ${cp.scadenza || '31/12/2026'}</p>
                         ${cp.stato === 'Attivo'
                             ? `<button onclick="openQRModal('${cp.code}','${(cp.offerta||'').replace(/'/g,'')}','${(cp.palestra||'').replace(/'/g,'')}')"
                                 class="text-xs font-bold bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5">

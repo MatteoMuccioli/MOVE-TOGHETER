@@ -229,7 +229,7 @@ app.post('/api/user/complete-challenge', authMiddleware, (req, res) => {
 
 app.get('/api/user/coupons', authMiddleware, (req, res) => {
     const now      = new Date();
-    const scadenza = new Date('2025-12-31T23:59:59');
+    const scadenza = new Date('2026-12-31T23:59:59');
     const mapped   = readJSON(COUPON_F)
         .filter(c => c.userId === req.user.id)
         .map(c => ({ ...c, stato: c.stato === 'Usato' ? 'Usato' : (now > scadenza ? 'Scaduto' : 'Attivo') }))
@@ -377,7 +377,7 @@ function buildWelcomeEmail(user) {
             <div style="text-align:center;margin:28px 0;">
                 <a href="${process.env.APP_URL || ''}/dashboard.html" style="background:#FF6B35;color:white;padding:14px 32px;border-radius:12px;text-decoration:none;font-weight:700;display:inline-block;">Vai alla tua Dashboard →</a>
             </div>
-            <p style="color:#9CA3AF;font-size:12px;text-align:center;">Move Together · ANIF Eurowellness · RiminiWellness 2025</p>
+            <p style="color:#9CA3AF;font-size:12px;text-align:center;">Move Together · ANIF Eurowellness · RiminiWellness 2026</p>
         </div>
     </div>`;
 }
@@ -387,7 +387,7 @@ function buildUserEmail(data) {
     return `<div style="font-family:'Inter',sans-serif;max-width:560px;margin:0 auto;">
         <div style="background:linear-gradient(135deg,#FF6B35,#FF8A5B);padding:28px;text-align:center;color:white;border-radius:16px 16px 0 0;">
             <h1 style="font-weight:900;font-size:1.5rem;margin:0 0 6px;">Il tuo Coupon Move Together 🎉</h1>
-            <p style="opacity:.9;margin:0;font-size:13px;">ANIF Eurowellness · RiminiWellness 2025</p>
+            <p style="opacity:.9;margin:0;font-size:13px;">ANIF Eurowellness · RiminiWellness 2026</p>
         </div>
         <div style="background:white;padding:28px;border-radius:0 0 16px 16px;border:1px solid #e5e7eb;">
             <p>Ciao <strong>${data.name}</strong>, la tua prenotazione è confermata!</p>
@@ -397,7 +397,7 @@ function buildUserEmail(data) {
                 <p style="font-weight:600;color:#374151;margin:0 0 6px;">${data.offer}</p>
                 <p style="color:#9CA3AF;font-size:13px;margin:0;">📍 ${data.gymName}</p>
             </div>
-            <p style="color:#9CA3AF;font-size:12px;text-align:center;">Valido fino al 31/12/2025 · Presenta alla reception del centro ANIF</p>
+            <p style="color:#9CA3AF;font-size:12px;text-align:center;">Valido fino al 31/12/2026 · Presenta alla reception del centro ANIF</p>
         </div>
     </div>`;
 }

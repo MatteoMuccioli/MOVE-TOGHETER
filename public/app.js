@@ -590,7 +590,7 @@ function renderCoupon({ name, age, email, ageGroup, gymName, gymAddress, offer, 
                     <i class="fas fa-running" style="font-size:1.3rem;"></i>
                     <span style="font-family:'Poppins',sans-serif;font-weight:900;font-size:1.4rem;">Move Together</span>
                 </div>
-                <p style="font-size:12px;opacity:.85;font-weight:600;margin:0;">ANIF Eurowellness · RiminiWellness 2025</p>
+                <p style="font-size:12px;opacity:.85;font-weight:600;margin:0;">ANIF Eurowellness · RiminiWellness 2026</p>
             </div>
             <div style="padding:20px 22px;background:white;">
                 <div style="display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:2px dashed #E5E7EB;margin-bottom:14px;">
@@ -622,7 +622,7 @@ function renderCoupon({ name, age, email, ageGroup, gymName, gymAddress, offer, 
                 </div>
                 <p style="text-align:center;font-size:10px;color:#9CA3AF;letter-spacing:.15em;margin:0 0 12px;">${code.replace(/-/g,' · ')}</p>
                 <div style="border-top:2px dashed #E5E7EB;padding-top:10px;display:flex;justify-content:space-between;font-size:11px;color:#9CA3AF;">
-                    <span>Valido fino al <strong style="color:#6B7280;">31/12/2025</strong></span>
+                    <span>Valido fino al <strong style="color:#6B7280;">31/12/2026</strong></span>
                     <span>Non cedibile</span>
                 </div>
             </div>
@@ -720,7 +720,7 @@ function initCountdown() {
 
 /* ── Share ── */
 function shareCoupon(code) {
-    const text = `Ho ricevuto il mio coupon Move Together! 🏃 Codice: ${code}\nScopri il progetto ANIF Eurowellness per RiminiWellness 2025!`;
+    const text = `Ho ricevuto il mio coupon Move Together! 🏃 Codice: ${code}\nScopri il progetto ANIF Eurowellness per RiminiWellness 2026!`;
     if (navigator.share) {
         navigator.share({ title:'Coupon Move Together', text, url: location.href }).catch(()=>{});
     } else {

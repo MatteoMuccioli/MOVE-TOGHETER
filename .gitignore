@@ -1,0 +1,19 @@
+# Dipendenze Node
+node_modules/
+
+# Variabili d'ambiente REALI (NON committare mai questo file!)
+.env
+
+# Dati prenotazioni (facoltativamente escludile dal repo)
+# prenotazioni.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Log
+npm-debug.log*

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin · Move Together ANIF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --coral:#FF6B35; --ocean:#1F6B52; }
+        body { font-family:'Inter',sans-serif; background:#0F1117; color:#E5E7EB; -webkit-font-smoothing:antialiased; }
+        .card { background:#1A1D27; border:1px solid rgba(255,255,255,.07); border-radius:20px; }
+        .kpi-card { background:linear-gradient(135deg,#1A1D27,#1E2234); border:1px solid rgba(255,255,255,.08); border-radius:20px; padding:24px; transition:transform .25s ease,box-shadow .25s ease; cursor:default; }
+        .kpi-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,.4); }
+        .badge-pill { display:inline-block; padding:3px 10px; border-radius:100px; font-size:.7rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+        .table-row:hover { background:rgba(255,255,255,.04); }
+        .pulse-dot { width:8px; height:8px; border-radius:50%; background:#4ADE80; animation:pulse 2s infinite; flex-shrink:0; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+        ::-webkit-scrollbar { width:5px; height:5px; }
+        ::-webkit-scrollbar-track { background:#0F1117; }
+        ::-webkit-scrollbar-thumb { background:#FF6B35; border-radius:3px; }
+        /* Login screen */
+        #login-screen { position:fixed; inset:0; background:#0F1117; z-index:9999; display:flex; align-items:center; justify-content:center; }
+        /* Refresh spin */
+        @keyframes spin { to{transform:rotate(360deg)} }
+        .spin { animation:spin .7s linear infinite; }
+    </style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN SCREEN ══════════ -->
+<div id="login-screen">
+    <div style="background:#1A1D27;border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:48px;width:100%;max-width:420px;text-align:center;">
+        <div style="width:64px;height:64px;background:#FF6B35;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.8rem;">🏃</div>
+        <h1 style="font-family:'Poppins',sans-serif;font-weight:900;font-size:1.6rem;color:white;margin:0 0 6px;">Dashboard Admin</h1>
+        <p style="color:#6B7280;font-size:14px;margin:0 0 32px;">Move Together · ANIF Eurowellness</p>
+        <form onsubmit="doLogin(event)">
+            <input type="password" id="secret-input" placeholder="Chiave admin segreta"
+                style="width:100%;padding:14px 18px;background:#0F1117;border:2px solid rgba(255,255,255,.1);border-radius:14px;color:white;font-size:1rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;margin-bottom:16px;"
+                onfocus="this.style.borderColor='#FF6B35'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
+            <button type="submit" style="width:100%;padding:14px;background:#FF6B35;color:white;border:none;border-radius:14px;font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;transition:background .2s;"
+                onmouseover="this.style.background='#E55A25'" onmouseout="this.style.background='#FF6B35'">
+                Accedi alla Dashboard
+            </button>
+            <p id="login-error" style="color:#F87171;font-size:13px;margin:12px 0 0;display:none;">Chiave errata. Riprova.</p>
+        </form>
+        <p style="color:#374151;font-size:11px;margin:20px 0 0;">Solo per uso interno ANIF Eurowellness</p>
+    </div>
+</div>
+
+<!-- ══════════ NAVBAR ══════════ -->
+<nav style="background:#1A1D27;border-bottom:1px solid rgba(255,255,255,.07);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:36px;height:36px;background:#FF6B35;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;">🏃</div>
+        <div>
+            <span style="font-family:'Poppins',sans-serif;font-weight:900;font-size:1rem;color:white;">Move Together</span>
+            <span style="display:block;font-size:10px;color:#FF6B35;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">Dashboard Admin · ANIF</span>
+        </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#9CA3AF;">
+            <span class="pulse-dot"></span>
+            <span id="last-update">Aggiornamento...</span>
+        </div>
+        <button onclick="loadStats()" id="refresh-btn" style="padding:8px 16px;background:rgba(255,107,53,.15);color:#FF6B35;border:1px solid rgba(255,107,53,.3);border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;" onmouseover="this.style.background='rgba(255,107,53,.25)'" onmouseout="this.style.background='rgba(255,107,53,.15)'">
+            <i class="fas fa-sync-alt" id="refresh-icon"></i>Aggiorna
+        </button>
+        <button onclick="exportCSV()" style="padding:8px 16px;background:rgba(31,107,82,.2);color:#4ADE80;border:1px solid rgba(74,222,128,.2);border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;" onmouseover="this.style.background='rgba(31,107,82,.35)'" onmouseout="this.style.background='rgba(31,107,82,.2)'">
+            <i class="fas fa-download"></i>Esporta CSV
+        </button>
+        <a href="/" style="padding:8px 16px;background:rgba(255,255,255,.06);color:#9CA3AF;border:1px solid rgba(255,255,255,.1);border-radius:10px;font-weight:700;font-size:13px;text-decoration:none;display:flex;align-items:center;gap:6px;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.06)'">
+            <i class="fas fa-arrow-left"></i>Sito
+        </a>
+    </div>
+</nav>
+
+<!-- ══════════ MAIN CONTENT ══════════ -->
+<main style="padding:32px;max-width:1400px;margin:0 auto;">
+
+    <!-- KPI CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px;" id="kpi-grid">
+        <div class="kpi-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <div style="width:44px;height:44px;background:rgba(255,107,53,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">📊</div>
+                <span class="badge-pill" style="background:rgba(255,107,53,.15);color:#FF6B35;">TOTALE</span>
+            </div>
+            <p style="font-family:'Poppins',sans-serif;font-size:2.5rem;font-weight:900;color:white;margin:0 0 4px;" id="kpi-total">–</p>
+            <p style="font-size:13px;color:#6B7280;margin:0;">Iscrizioni Totali</p>
+        </div>
+        <div class="kpi-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <div style="width:44px;height:44px;background:rgba(234,88,12,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">⚡</div>
+                <span class="badge-pill" style="background:rgba(234,88,12,.15);color:#EA580C;">16-20</span>
+            </div>
+            <p style="font-family:'Poppins',sans-serif;font-size:2.5rem;font-weight:900;color:#EA580C;margin:0 0 4px;" id="kpi-giovani">–</p>
+            <p style="font-size:13px;color:#6B7280;margin:0;">Giovani (16-20)</p>
+        </div>
+        <div class="kpi-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <div style="width:44px;height:44px;background:rgba(31,107,82,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">❤️</div>
+                <span class="badge-pill" style="background:rgba(31,107,82,.2);color:#4ADE80;">OVER 60</span>
+            </div>
+            <p style="font-family:'Poppins',sans-serif;font-size:2.5rem;font-weight:900;color:#4ADE80;margin:0 0 4px;" id="kpi-senior">–</p>
+            <p style="font-size:13px;color:#6B7280;margin:0;">Senior (Over 60)</p>
+        </div>
+        <div class="kpi-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <div style="width:44px;height:44px;background:rgba(139,92,246,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">🤝</div>
+                <span class="badge-pill" style="background:rgba(139,92,246,.2);color:#A78BFA;">INTER.</span>
+            </div>
+            <p style="font-family:'Poppins',sans-serif;font-size:2.5rem;font-weight:900;color:#A78BFA;margin:0 0 4px;" id="kpi-inter">–</p>
+            <p style="font-size:13px;color:#6B7280;margin:0;">Coupon Intergenerazionali</p>
+        </div>
+    </div>
+
+    <!-- CHARTS ROW 1 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px;">
+
+        <!-- Trend 7 giorni -->
+        <div class="card" style="padding:24px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                <div>
+                    <h2 style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;color:white;margin:0 0 3px;">📈 Trend Iscrizioni</h2>
+                    <p style="font-size:12px;color:#6B7280;margin:0;">Ultimi 7 giorni</p>
+                </div>
+            </div>
+            <canvas id="chart-trend" height="220"></canvas>
+        </div>
+
+        <!-- Distribuzione fasce -->
+        <div class="card" style="padding:24px;">
+            <div style="margin-bottom:20px;">
+                <h2 style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;color:white;margin:0 0 3px;">🎯 Distribuzione per Fascia</h2>
+                <p style="font-size:12px;color:#6B7280;margin:0;">Giovani · Senior · Altro</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:24px;">
+                <canvas id="chart-fasce" width="180" height="180" style="flex-shrink:0;"></canvas>
+                <div id="fasce-legend" style="flex:1;display:flex;flex-direction:column;gap:10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHARTS ROW 2 -->
+    <div class="card" style="padding:24px;margin-bottom:28px;">
+        <div style="margin-bottom:20px;">
+            <h2 style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;color:white;margin:0 0 3px;">🎟️ Iscrizioni per Offerta</h2>
+            <p style="font-size:12px;color:#6B7280;margin:0;">Distribuzione delle prenotazioni per tipo di promozione</p>
+        </div>
+        <canvas id="chart-offers" height="100"></canvas>
+    </div>
+
+    <!-- TABELLA ULTIME PRENOTAZIONI -->
+    <div class="card" style="padding:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <div>
+                <h2 style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;color:white;margin:0 0 3px;">📋 Ultime Prenotazioni</h2>
+                <p style="font-size:12px;color:#6B7280;margin:0;">Aggiornamento in tempo reale</p>
+            </div>
+            <span id="table-count" style="font-size:12px;color:#6B7280;"></span>
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,.08);">
+                        <th style="text-align:left;padding:10px 14px;color:#6B7280;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;">Nome</th>
+                        <th style="text-align:left;padding:10px 14px;color:#6B7280;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Età</th>
+                        <th style="text-align:left;padding:10px 14px;color:#6B7280;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Fascia</th>
+                        <th style="text-align:left;padding:10px 14px;color:#6B7280;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Email</th>
+                        <th style="text-align:left;padding:10px 14px;color:#6B7280;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Offerta</th>
+                        <th style="text-align:left;padding:10px 14px;color:#6B7280;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;">Sede</th>
+                        <th style="text-align:left;padding:10px 14px;color:#6B7280;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;">Codice</th>
+                        <th style="text-align:left;padding:10px 14px;color:#6B7280;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Data</th>
+                    </tr>
+                </thead>
+                <tbody id="bookings-table"></tbody>
+            </table>
+            <div id="empty-state" style="display:none;text-align:center;padding:48px;color:#6B7280;">
+                <div style="font-size:3rem;margin-bottom:12px;">📭</div>
+                <p style="font-size:15px;font-weight:600;color:#9CA3AF;margin:0 0 6px;">Nessuna prenotazione ancora</p>
+                <p style="font-size:13px;margin:0;">Le iscrizioni appariranno qui in tempo reale.</p>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script>
+/* ══════════ STATE ══════════ */
+let adminSecret = '';
+let chartTrend  = null;
+let chartFasce  = null;
+let chartOffers = null;
+let autoRefresh = null;
+
+/* ══════════ LOGIN ══════════ */
+async function doLogin(e) {
+    e.preventDefault();
+    const key = document.getElementById('secret-input').value.trim();
+    if (!key) return;
+
+    try {
+        const res = await fetch(`/api/admin/stats?secret=${encodeURIComponent(key)}`);
+        if (res.status === 401) {
+            document.getElementById('login-error').style.display = 'block';
+            return;
+        }
+        adminSecret = key;
+        sessionStorage.setItem('mt_admin_key', key);
+        document.getElementById('login-screen').style.display = 'none';
+        initDashboard();
+    } catch (_) {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-error').textContent = 'Server non raggiungibile.';
+    }
+}
+
+/* ══════════ AUTO-LOGIN da sessionStorage ══════════ */
+window.addEventListener('DOMContentLoaded', () => {
+    const stored = sessionStorage.getItem('mt_admin_key');
+    if (stored) {
+        adminSecret = stored;
+        document.getElementById('login-screen').style.display = 'none';
+        initDashboard();
+    }
+});
+
+/* ══════════ INIT ══════════ */
+function initDashboard() {
+    loadStats();
+    autoRefresh = setInterval(loadStats, 30_000); // Auto-aggiornamento ogni 30s
+}
+
+/* ══════════ LOAD STATS ══════════ */
+async function loadStats() {
+    const icon = document.getElementById('refresh-icon');
+    icon.classList.add('spin');
+
+    try {
+        const res  = await fetch(`/api/admin/stats?secret=${encodeURIComponent(adminSecret)}`);
+        if (res.status === 401) { sessionStorage.removeItem('mt_admin_key'); location.reload(); return; }
+        const data = await res.json();
+
+        updateKPIs(data);
+        updateChartTrend(data.byDay);
+        updateChartFasce(data);
+        updateChartOffers(data.byOffer);
+        updateTable(data.recentBookings);
+
+        const now = new Date().toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        document.getElementById('last-update').textContent = `Aggiornato alle ${now}`;
+    } catch (err) {
+        console.error('Errore caricamento stats:', err);
+        document.getElementById('last-update').textContent = 'Errore di connessione';
+    } finally {
+        icon.classList.remove('spin');
+    }
+}
+
+/* ══════════ KPI ══════════ */
+function updateKPIs(data) {
+    animateNumber('kpi-total',  0, data.total,           1200);
+    animateNumber('kpi-giovani',0, data.giovani,          900);
+    animateNumber('kpi-senior', 0, data.senior,           900);
+    animateNumber('kpi-inter',  0, data.intergenerazionali,900);
+}
+
+function animateNumber(id, from, to, duration) {
+    const el  = document.getElementById(id);
+    if (!el) return;
+    const step = Math.ceil((to - from) / (duration / 16));
+    let cur = from;
+    const t = setInterval(() => {
+        cur = Math.min(cur + step, to);
+        el.textContent = cur;
+        if (cur >= to) clearInterval(t);
+    }, 16);
+}
+
+/* ══════════ CHART: TREND ══════════ */
+function updateChartTrend(byDay) {
+    const labels = Object.keys(byDay);
+    const values = Object.values(byDay);
+    const ctx    = document.getElementById('chart-trend').getContext('2d');
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 220);
+    gradient.addColorStop(0, 'rgba(255,107,53,0.35)');
+    gradient.addColorStop(1, 'rgba(255,107,53,0.02)');
+
+    if (chartTrend) { chartTrend.destroy(); }
+    chartTrend = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Iscrizioni',
+                data:  values,
+                borderColor:     '#FF6B35',
+                backgroundColor:  gradient,
+                pointBackgroundColor: '#FF6B35',
+                pointBorderColor:     '#1A1D27',
+                pointBorderWidth: 2,
+                pointRadius:      5,
+                tension:          0.4,
+                fill:             true,
+                borderWidth:      2.5
+            }]
+        },
+        options: {
+            responsive:true, maintainAspectRatio:false,
+            plugins: { legend:{ display:false }, tooltip:{ backgroundColor:'#1E2234', borderColor:'rgba(255,107,53,.3)', borderWidth:1, titleColor:'#FF6B35', bodyColor:'#E5E7EB', padding:10 }},
+            scales: {
+                x: { grid:{ color:'rgba(255,255,255,.05)' }, ticks:{ color:'#6B7280', font:{ size:11 } }},
+                y: { grid:{ color:'rgba(255,255,255,.05)' }, ticks:{ color:'#6B7280', font:{ size:11 }, stepSize:1, beginAtZero:true }}
+            }
+        }
+    });
+}
+
+/* ══════════ CHART: FASCE ══════════ */
+function updateChartFasce(data) {
+    const labels = ['Giovani (16-20)', 'Senior (Over 60)', 'Altro'];
+    const values = [data.giovani, data.senior, data.altri];
+    const colors = ['#FF6B35', '#4ADE80', '#A78BFA'];
+    const ctx    = document.getElementById('chart-fasce').getContext('2d');
+
+    if (chartFasce) { chartFasce.destroy(); }
+    chartFasce = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data:values, backgroundColor:colors, borderColor:'#1A1D27', borderWidth:3, hoverOffset:6 }] },
+        options: {
+            responsive:false, maintainAspectRatio:false, cutout:'68%',
+            plugins: { legend:{display:false}, tooltip:{ backgroundColor:'#1E2234', borderColor:'rgba(255,255,255,.1)', borderWidth:1, titleColor:'#E5E7EB', bodyColor:'#9CA3AF', padding:10 }}
+        }
+    });
+
+    const leg = document.getElementById('fasce-legend');
+    leg.innerHTML = labels.map((l, i) => `
+        <div style="display:flex;align-items:center;gap:10px;">
+            <span style="width:10px;height:10px;border-radius:50%;background:${colors[i]};flex-shrink:0;"></span>
+            <div>
+                <p style="margin:0;font-weight:700;font-size:13px;color:white;">${values[i]}</p>
+                <p style="margin:0;font-size:11px;color:#6B7280;">${l}</p>
+            </div>
+        </div>`
+    ).join('');
+}
+
+/* ══════════ CHART: OFFERTE ══════════ */
+function updateChartOffers(byOffer) {
+    const labels = Object.keys(byOffer);
+    const values = Object.values(byOffer);
+    const ctx    = document.getElementById('chart-offers').getContext('2d');
+    const palette = ['#FF6B35','#4ADE80','#60A5FA','#A78BFA','#F59E0B','#EC4899'];
+    const bgColors = labels.map((_, i) => palette[i % palette.length]);
+
+    if (chartOffers) { chartOffers.destroy(); }
+    chartOffers = new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets: [{ data:values, backgroundColor: bgColors.map(c => c + '33'), borderColor: bgColors, borderWidth:2, borderRadius:8, borderSkipped:false }] },
+        options: {
+            indexAxis: 'y', responsive:true, maintainAspectRatio:true,
+            plugins: { legend:{display:false}, tooltip:{ backgroundColor:'#1E2234', borderColor:'rgba(255,255,255,.1)', borderWidth:1, titleColor:'#E5E7EB', bodyColor:'#9CA3AF', padding:10 }},
+            scales: {
+                x: { grid:{ color:'rgba(255,255,255,.05)' }, ticks:{ color:'#6B7280', font:{size:11}, stepSize:1, beginAtZero:true }},
+                y: { grid:{ display:false }, ticks:{ color:'#E5E7EB', font:{size:12} }}
+            }
+        }
+    });
+}
+
+/* ══════════ TABLE ══════════ */
+function updateTable(bookings) {
+    const tbody = document.getElementById('bookings-table');
+    const empty = document.getElementById('empty-state');
+    const count = document.getElementById('table-count');
+
+    count.textContent = `${bookings.length} record`;
+
+    if (!bookings.length) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
+    empty.style.display = 'none';
+
+    const groupColors = {
+        'Giovane (16-20)': { bg:'rgba(234,88,12,.15)',  color:'#EA580C' },
+        'Over 60':         { bg:'rgba(74,222,128,.12)', color:'#4ADE80' },
+        'Altro':           { bg:'rgba(167,139,250,.12)',color:'#A78BFA' }
+    };
+
+    tbody.innerHTML = bookings.map(b => {
+        const gc  = groupColors[b.ageGroup] || groupColors['Altro'];
+        const dt  = new Date(b.timestamp).toLocaleString('it-IT', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+        const gym = (b.gymName || '').split(' – ')[0].substring(0, 22) + ((b.gymName||'').length > 22 ? '…' : '');
+        const off = (b.offer  || '').substring(0, 28) + ((b.offer||'').length  > 28 ? '…' : '');
+        return `<tr class="table-row" style="border-bottom:1px solid rgba(255,255,255,.05);">
+            <td style="padding:12px 14px;color:white;font-weight:600;white-space:nowrap;">${b.name}</td>
+            <td style="padding:12px 14px;color:#9CA3AF;">${b.age}</td>
+            <td style="padding:12px 14px;"><span style="background:${gc.bg};color:${gc.color};padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;">${b.ageGroup}</span></td>
+            <td style="padding:12px 14px;color:#6B7280;font-size:12px;">${b.email}</td>
+            <td style="padding:12px 14px;color:#E5E7EB;font-size:12px;">${off}</td>
+            <td style="padding:12px 14px;color:#9CA3AF;font-size:12px;white-space:nowrap;">${gym}</td>
+            <td style="padding:12px 14px;"><span style="font-family:'Courier New',monospace;font-size:12px;color:#FF6B35;font-weight:700;letter-spacing:.06em;">${b.code}</span></td>
+            <td style="padding:12px 14px;color:#6B7280;font-size:12px;white-space:nowrap;">${dt}</td>
+        </tr>`;
+    }).join('');
+}
+
+/* ══════════ EXPORT CSV ══════════ */
+function exportCSV() {
+    const url = `/api/admin/export?secret=${encodeURIComponent(adminSecret)}`;
+    const a   = document.createElement('a');
+    a.href    = url;
+    a.download = '';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+</script>
+</body>
+</html>

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Mia Area – Move Together</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -21,47 +20,172 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <style>
+        :root {
+            --coral: #FF5722;
+            --ocean-deep: #004B49;
+            --bg-dark: #090C14;
+        }
+        body {
+            background: var(--bg-dark);
+            background-image:
+                radial-gradient(ellipse 80% 60% at 110% -10%, rgba(255,87,34,.07) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 60% at -10% 110%, rgba(0,75,73,.07) 0%, transparent 55%);
+            background-attachment: fixed;
+        }
+        /* ── Section entrance ── */
         .dash-section { animation: fadeUp .5s ease both; }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
         .dash-section:nth-child(2) { animation-delay:.08s }
         .dash-section:nth-child(3) { animation-delay:.16s }
         .dash-section:nth-child(4) { animation-delay:.24s }
         .dash-section:nth-child(5) { animation-delay:.32s }
-        .xp-bar { transition: width 1.2s cubic-bezier(.4,0,.2,1); }
-        .challenge-card { transition: transform .2s, box-shadow .2s; }
-        .challenge-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.09); }
-        .coupon-card { background: linear-gradient(135deg,#FF6B35 0%,#C44A1A 100%); }
-        .coupon-card.ocean { background: linear-gradient(135deg,#2D8A6E 0%,#0D3B2E 100%); }
-        .buddy-card { transition: transform .2s; }
-        .buddy-card:hover { transform: translateY(-2px); }
+
+        /* ── Glass panels ── */
+        .glass-dark {
+            background: rgba(255,255,255,.04);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,.08);
+        }
+        .glass-section {
+            background: rgba(255,255,255,.04);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 24px;
+        }
+
+        /* ── XP Circular Ring ── */
+        .xp-ring-track { fill: none; stroke: rgba(255,255,255,.08); stroke-width: 8; }
+        .xp-ring-fill  {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke: url(#xpGradient);
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1);
+        }
+
+        /* ── Stat cards ── */
+        .dash-stat-card {
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 20px;
+            padding: 20px;
+            transition: transform .25s, box-shadow .25s;
+        }
+        .dash-stat-card:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,.4); }
+
+        /* ── Apple Wallet 3D Coupon ── */
+        .wallet-scene { perspective: 900px; }
+        .wallet-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform .4s cubic-bezier(.23,1,.32,1), box-shadow .4s;
+            cursor: pointer;
+        }
+        .wallet-card:hover {
+            transform: rotateX(-5deg) rotateY(8deg) scale(1.03);
+            box-shadow: 0 24px 60px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.1);
+        }
+        .wallet-card.coral-card { background: linear-gradient(135deg,#FF5722 0%,#FF8A5B 50%,#C44A1A 100%); }
+        .wallet-card.ocean-card { background: linear-gradient(135deg,#004B49 0%,#1F6B52 50%,#0D3B2E 100%); }
+        /* shine overlay */
+        .wallet-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,.18) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .wallet-card-inner { position: relative; z-index: 2; padding: 22px; }
+
+        /* ── Challenge cards dark ── */
+        .ch-card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 18px;
+            padding: 20px;
+            transition: transform .2s, border-color .2s, box-shadow .2s;
+        }
+        .ch-card:hover { transform: translateY(-3px); border-color: rgba(255,87,34,.35); box-shadow: 0 12px 32px rgba(0,0,0,.4); }
+        .ch-card.done { border-color: rgba(16,185,129,.25); background: rgba(16,185,129,.04); }
+
+        /* ── Buddy cards ── */
+        .buddy-card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 18px;
+            padding: 20px;
+            transition: transform .2s, box-shadow .2s;
+        }
+        .buddy-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.35); }
+        .buddy-card.same-gym { border-color: rgba(31,107,82,.35); }
+
+        /* ── Navbar ── */
+        .dash-nav {
+            background: rgba(9,12,20,.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,.07);
+        }
+
+        /* ── Toast ── */
         #qr-modal { display:none; }
         #qr-modal.open { display:flex; }
+
+        /* ── Neon XP number ── */
+        .xp-neon {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: 3.5rem;
+            line-height: 1;
+            background: linear-gradient(135deg, #FF5722, #FF8A5B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 18px rgba(255,87,34,.5));
+        }
+
+        /* ── Section header accent ── */
+        .section-accent {
+            display: inline-block;
+            width: 3px;
+            height: 20px;
+            background: linear-gradient(to bottom, #FF5722, #FF8A5B);
+            border-radius: 2px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
     </style>
 </head>
-<body class="bg-gray-50 font-sans min-h-screen">
+<body class="font-sans min-h-screen text-gray-100">
 
 <!-- ══════════════ NAVBAR ══════════════ -->
-<nav class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
+<nav class="dash-nav sticky top-0 z-40">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <a href="index.html" class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-coral-500 flex items-center justify-center shadow-sm">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
                     <i class="fas fa-running text-white text-sm"></i>
                 </div>
-                <span class="font-display font-black text-lg text-gray-900">Move Together</span>
+                <span class="font-display font-black text-lg text-white">Move Together</span>
             </a>
             <div class="flex items-center gap-3">
-                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-ocean-50 rounded-xl border border-ocean-100">
-                    <div id="nav-avatar" class="w-7 h-7 rounded-lg bg-ocean-700 flex items-center justify-center text-white font-black text-xs"></div>
-                    <span id="nav-fullname" class="text-sm font-semibold text-ocean-800"></span>
-                    <span id="nav-level-badge" class="text-xs font-bold text-ocean-600 bg-ocean-100 px-2 py-0.5 rounded-full"></span>
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);">
+                    <div id="nav-avatar" class="w-7 h-7 rounded-lg flex items-center justify-center text-white font-black text-xs" style="background:linear-gradient(135deg,#004B49,#1F6B52);"></div>
+                    <span id="nav-fullname" class="text-sm font-semibold text-gray-200"></span>
+                    <span id="nav-level-badge" class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:rgba(255,87,34,.15);color:#FF8A5B;"></span>
                 </div>
-                <a href="index.html" class="text-sm text-gray-500 hover:text-gray-700 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                <a href="index.html" class="text-sm text-gray-400 hover:text-gray-200 font-medium px-3 py-1.5 rounded-lg transition-colors" style="background:rgba(255,255,255,.05);">
                     <i class="fas fa-home mr-1.5"></i><span class="hidden sm:inline">Home</span>
                 </a>
-                <button id="logout-btn" class="text-sm text-gray-400 hover:text-red-500 font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors">
+                <button id="logout-btn" class="text-sm font-medium px-3 py-1.5 rounded-lg transition-colors" style="color:#F87171;background:rgba(248,113,113,.08);">
                     <i class="fas fa-sign-out-alt mr-1.5"></i><span class="hidden sm:inline">Esci</span>
                 </button>
             </div>
@@ -70,52 +194,81 @@
 </nav>
 
 <!-- ══════════════ MAIN ══════════════ -->
-<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
     <!-- LOADING STATE -->
-    <div id="loading-state" class="flex flex-col items-center justify-center py-24 text-gray-400">
-        <div class="w-12 h-12 border-4 border-coral-200 border-t-coral-500 rounded-full animate-spin mb-4"></div>
-        <p class="text-sm font-medium">Caricamento area personale…</p>
+    <div id="loading-state" class="flex flex-col items-center justify-center py-32">
+        <div class="w-14 h-14 rounded-full border-4 border-t-transparent animate-spin mb-4" style="border-color:rgba(255,87,34,.3);border-top-color:#FF5722;"></div>
+        <p class="text-sm font-medium text-gray-500">Caricamento area personale…</p>
     </div>
 
     <!-- ERROR STATE -->
-    <div id="error-state" class="hidden flex flex-col items-center justify-center py-24 text-gray-500">
-        <i class="fas fa-exclamation-triangle text-4xl text-coral-400 mb-4"></i>
-        <p class="font-bold text-lg text-gray-700 mb-2">Errore caricamento</p>
-        <p id="error-msg" class="text-sm text-gray-400 mb-6"></p>
-        <button onclick="location.reload()" class="px-6 py-3 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-colors">
+    <div id="error-state" class="hidden flex flex-col items-center justify-center py-32">
+        <i class="fas fa-exclamation-triangle text-4xl mb-4" style="color:#FF5722;"></i>
+        <p class="font-bold text-lg text-gray-300 mb-2">Errore caricamento</p>
+        <p id="error-msg" class="text-sm text-gray-500 mb-6"></p>
+        <button onclick="location.reload()" class="px-6 py-3 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
             Riprova
         </button>
     </div>
 
-    <!-- DASHBOARD CONTENT (shown after load) -->
-    <div id="dash-content" class="hidden space-y-8">
+    <!-- DASHBOARD CONTENT -->
+    <div id="dash-content" class="hidden space-y-6">
 
         <!-- ── HERO XP ── -->
-        <div class="dash-section bg-gradient-to-br from-gray-900 via-gray-900 to-ocean-900 rounded-3xl p-8 lg:p-10 text-white overflow-hidden relative">
-            <div class="absolute top-0 right-0 w-80 h-80 bg-coral-500/10 rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
-            <div class="relative z-10">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-                    <div>
-                        <p class="text-gray-400 text-sm font-semibold mb-1 uppercase tracking-wider">Bentornato/a</p>
-                        <h1 id="hero-name" class="font-display font-black text-4xl lg:text-5xl mb-2"></h1>
+        <div class="dash-section rounded-3xl overflow-hidden relative" style="background:linear-gradient(145deg,#0D1117,#0A1410,#0F0A0A);border:1px solid rgba(255,255,255,.07);">
+            <!-- Neon blobs -->
+            <div class="absolute top-0 right-0 w-96 h-96 pointer-events-none" style="background:radial-gradient(circle,rgba(255,87,34,.1) 0%,transparent 65%);transform:translate(30%,-30%);"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 pointer-events-none" style="background:radial-gradient(circle,rgba(0,75,73,.12) 0%,transparent 65%);transform:translate(-30%,30%);"></div>
+
+            <div class="relative z-10 p-8 lg:p-10">
+                <div class="flex flex-col lg:flex-row lg:items-center gap-8">
+
+                    <!-- Left: info -->
+                    <div class="flex-1">
+                        <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color:rgba(255,255,255,.35);">Bentornato/a</p>
+                        <h1 id="hero-name" class="font-display font-black text-4xl lg:text-5xl text-white mb-3"></h1>
                         <div class="flex items-center gap-3 flex-wrap">
-                            <span id="hero-level" class="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 text-sm font-bold"></span>
-                            <span id="hero-fascia" class="inline-flex items-center gap-2 bg-coral-500/20 text-coral-300 rounded-full px-4 py-1.5 text-sm font-bold"></span>
+                            <span id="hero-level" class="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.1);"></span>
+                            <span id="hero-fascia" class="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full" style="background:rgba(255,87,34,.15);color:#FF8A5B;border:1px solid rgba(255,87,34,.25);"></span>
+                        </div>
+
+                        <!-- XP bar (horizontal, hidden on large, shown on small) -->
+                        <div class="mt-6 lg:hidden">
+                            <div class="flex justify-between text-xs mb-2" style="color:rgba(255,255,255,.4);">
+                                <span id="xp-label-current-sm"></span>
+                                <span id="xp-label-next-sm"></span>
+                            </div>
+                            <div class="h-2.5 rounded-full overflow-hidden" style="background:rgba(255,255,255,.08);">
+                                <div id="xp-bar-sm" class="h-full rounded-full" style="width:0%;background:linear-gradient(90deg,#FF5722,#FF8A5B);transition:width 1.4s cubic-bezier(.4,0,.2,1);"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="lg:text-right">
-                        <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Punti XP totali</p>
-                        <p id="hero-xp" class="font-display font-black text-6xl text-coral-400 leading-none"></p>
-                    </div>
-                </div>
-                <div class="mt-8">
-                    <div class="flex justify-between text-xs text-gray-400 mb-2">
-                        <span id="xp-label-current"></span>
-                        <span id="xp-label-next"></span>
-                    </div>
-                    <div class="h-3 bg-white/10 rounded-full overflow-hidden">
-                        <div id="xp-bar" class="xp-bar h-full bg-gradient-to-r from-coral-400 to-coral-600 rounded-full" style="width:0%"></div>
+
+                    <!-- Right: circular XP ring -->
+                    <div class="hidden lg:flex flex-col items-center gap-3">
+                        <div class="relative" style="width:160px;height:160px;">
+                            <svg width="160" height="160" viewBox="0 0 120 120">
+                                <defs>
+                                    <linearGradient id="xpGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%"   stop-color="#FF5722"/>
+                                        <stop offset="100%" stop-color="#FF8A5B"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle class="xp-ring-track" cx="60" cy="60" r="50"/>
+                                <circle id="xp-ring-fill" class="xp-ring-fill" cx="60" cy="60" r="50"
+                                    stroke-dasharray="314.16"
+                                    stroke-dashoffset="314.16"/>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <p id="hero-xp" class="xp-neon">0</p>
+                                <p class="text-xs font-bold uppercase tracking-widest mt-0.5" style="color:rgba(255,255,255,.35);">XP</p>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <p id="xp-label-current" class="text-xs font-medium" style="color:rgba(255,255,255,.4);"></p>
+                            <p id="xp-label-next" class="text-xs font-semibold" style="color:rgba(255,138,91,.7);"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -123,53 +276,56 @@
 
         <!-- ── STAT CARDS ── -->
         <div class="dash-section grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+            <div class="dash-stat-card">
                 <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 bg-coral-100 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-bolt text-coral-500"></i>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,87,34,.15);">
+                        <i class="fas fa-bolt" style="color:#FF5722;"></i>
                     </div>
-                    <span class="text-2xl font-black text-coral-500" id="stat-xp">–</span>
+                    <span class="text-2xl font-black" style="color:#FF8A5B;" id="stat-xp">–</span>
                 </div>
-                <p class="text-xs text-gray-500 font-semibold">Punti XP</p>
+                <p class="text-xs font-semibold" style="color:rgba(255,255,255,.35);">Punti XP</p>
             </div>
-            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+            <div class="dash-stat-card">
                 <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-check-circle text-green-500"></i>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(74,222,128,.1);">
+                        <i class="fas fa-check-circle" style="color:#4ADE80;"></i>
                     </div>
-                    <span class="text-2xl font-black text-green-600" id="stat-sfide">–</span>
+                    <span class="text-2xl font-black" style="color:#4ADE80;" id="stat-sfide">–</span>
                 </div>
-                <p class="text-xs text-gray-500 font-semibold">Sfide completate</p>
+                <p class="text-xs font-semibold" style="color:rgba(255,255,255,.35);">Sfide completate</p>
             </div>
-            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+            <div class="dash-stat-card">
                 <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-medal text-purple-500"></i>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(167,139,250,.1);">
+                        <i class="fas fa-medal" style="color:#A78BFA;"></i>
                     </div>
-                    <span class="text-2xl font-black text-purple-600" id="stat-badges">–</span>
+                    <span class="text-2xl font-black" style="color:#A78BFA;" id="stat-badges">–</span>
                 </div>
-                <p class="text-xs text-gray-500 font-semibold">Badge sbloccati</p>
+                <p class="text-xs font-semibold" style="color:rgba(255,255,255,.35);">Badge sbloccati</p>
             </div>
-            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+            <div class="dash-stat-card">
                 <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-ticket-alt text-amber-500"></i>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(251,191,36,.1);">
+                        <i class="fas fa-ticket-alt" style="color:#FBBF24;"></i>
                     </div>
-                    <span class="text-2xl font-black text-amber-600" id="stat-coupon">–</span>
+                    <span class="text-2xl font-black" style="color:#FBBF24;" id="stat-coupon">–</span>
                 </div>
-                <p class="text-xs text-gray-500 font-semibold">Coupon attivi</p>
+                <p class="text-xs font-semibold" style="color:rgba(255,255,255,.35);">Coupon attivi</p>
             </div>
         </div>
 
         <!-- ── SFIDE ── -->
-        <div class="dash-section bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-            <div class="p-6 border-b border-gray-50">
+        <div class="dash-section glass-section overflow-hidden">
+            <div class="p-6" style="border-bottom:1px solid rgba(255,255,255,.06);">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="font-display font-bold text-xl text-gray-900">Sfide della Settimana</h2>
-                        <p class="text-sm text-gray-400 mt-0.5">Completa le sfide e guadagna XP</p>
+                    <div class="flex items-center">
+                        <span class="section-accent"></span>
+                        <div>
+                            <h2 class="font-display font-bold text-xl text-white">Sfide della Settimana</h2>
+                            <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.35);">Completa le sfide e guadagna XP</p>
+                        </div>
                     </div>
-                    <div id="challenges-progress-pill" class="hidden sm:flex items-center gap-2 bg-coral-50 text-coral-600 rounded-full px-4 py-2 text-xs font-bold border border-coral-100">
+                    <div id="challenges-progress-pill" class="hidden sm:flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full" style="background:rgba(255,87,34,.12);color:#FF8A5B;border:1px solid rgba(255,87,34,.2);">
                         <i class="fas fa-trophy"></i><span id="ch-progress-text"></span>
                     </div>
                 </div>
@@ -178,42 +334,54 @@
         </div>
 
         <!-- ── COUPON WALLET ── -->
-        <div class="dash-section bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-            <div class="p-6 border-b border-gray-50">
+        <div class="dash-section glass-section overflow-hidden">
+            <div class="p-6" style="border-bottom:1px solid rgba(255,255,255,.06);">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="font-display font-bold text-xl text-gray-900">Il Mio Wallet</h2>
-                        <p class="text-sm text-gray-400 mt-0.5">I tuoi coupon e le tue prenotazioni</p>
+                    <div class="flex items-center">
+                        <span class="section-accent" style="background:linear-gradient(to bottom,#004B49,#1F6B52);"></span>
+                        <div>
+                            <h2 class="font-display font-bold text-xl text-white">Il Mio Wallet</h2>
+                            <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.35);">I tuoi coupon e le tue prenotazioni</p>
+                        </div>
                     </div>
-                    <a href="index.html#sfide" class="text-sm text-coral-500 font-bold hover:text-coral-600 flex items-center gap-1">
-                        <i class="fas fa-plus-circle"></i> Ottieni coupon
+                    <a href="index.html#sfide" class="text-sm font-bold flex items-center gap-1.5" style="color:#FF8A5B;">
+                        <i class="fas fa-plus-circle"></i>Ottieni coupon
                     </a>
                 </div>
             </div>
             <div id="coupons-grid" class="p-6">
-                <div id="coupons-empty" class="hidden text-center py-10 text-gray-400">
-                    <i class="fas fa-wallet text-4xl mb-3 block text-gray-200"></i>
-                    <p class="font-medium text-gray-500">Nessun coupon ancora</p>
-                    <p class="text-sm mt-1">Prenota un evento o completa le sfide per ottenere coupon!</p>
-                    <a href="index.html" class="inline-block mt-4 px-5 py-2.5 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-colors">
+                <div id="coupons-empty" class="hidden text-center py-12">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
+                        <i class="fas fa-wallet text-2xl" style="color:rgba(255,255,255,.15);"></i>
+                    </div>
+                    <p class="font-medium text-gray-400">Nessun coupon ancora</p>
+                    <p class="text-sm mt-1 text-gray-600">Prenota un evento o completa le sfide per ottenere coupon!</p>
+                    <a href="index.html" class="inline-block mt-4 px-5 py-2.5 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
                         Esplora gli eventi
                     </a>
                 </div>
-                <div id="coupons-list" class="grid md:grid-cols-2 gap-4"></div>
+                <div id="coupons-list" class="grid md:grid-cols-2 gap-5"></div>
             </div>
         </div>
 
         <!-- ── GYM BUDDY ── -->
-        <div class="dash-section bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-            <div class="p-6 border-b border-gray-50">
-                <h2 class="font-display font-bold text-xl text-gray-900">Gym Buddy Suggeriti</h2>
-                <p class="text-sm text-gray-400 mt-0.5">Compagni di allenamento per te</p>
+        <div class="dash-section glass-section overflow-hidden">
+            <div class="p-6" style="border-bottom:1px solid rgba(255,255,255,.06);">
+                <div class="flex items-center">
+                    <span class="section-accent" style="background:linear-gradient(to bottom,#A78BFA,#8B5CF6);"></span>
+                    <div>
+                        <h2 class="font-display font-bold text-xl text-white">Gym Buddy Suggeriti</h2>
+                        <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.35);">Compagni di allenamento per te</p>
+                    </div>
+                </div>
             </div>
             <div id="buddy-grid" class="p-6">
-                <div id="buddy-empty" class="hidden text-center py-10 text-gray-400">
-                    <i class="fas fa-users text-4xl mb-3 block text-gray-200"></i>
-                    <p class="font-medium text-gray-500">Nessun Gym Buddy disponibile al momento</p>
-                    <p class="text-sm mt-1">Invita altri partecipanti a registrarsi su Move Together!</p>
+                <div id="buddy-empty" class="hidden text-center py-12">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
+                        <i class="fas fa-users text-2xl" style="color:rgba(255,255,255,.15);"></i>
+                    </div>
+                    <p class="font-medium text-gray-400">Nessun Gym Buddy disponibile</p>
+                    <p class="text-sm mt-1 text-gray-600">Invita altri partecipanti a registrarsi su Move Together!</p>
                 </div>
                 <div id="buddy-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
@@ -224,23 +392,26 @@
 
 <!-- TOAST -->
 <div id="dash-toast" class="fixed bottom-6 right-6 z-[99999] hidden">
-    <div id="dash-toast-inner" class="bg-white rounded-2xl shadow-2xl p-4 flex items-center gap-3 min-w-64 border border-gray-100">
+    <div id="dash-toast-inner" class="rounded-2xl shadow-2xl p-4 flex items-center gap-3 min-w-64" style="background:#1A1D2E;border:1px solid rgba(255,255,255,.1);">
         <div id="dash-toast-icon" class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"></div>
-        <div><p id="dash-toast-title" class="font-bold text-sm text-gray-900"></p><p id="dash-toast-msg" class="text-xs text-gray-500 mt-0.5"></p></div>
+        <div>
+            <p id="dash-toast-title" class="font-bold text-sm text-white"></p>
+            <p id="dash-toast-msg" class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);"></p>
+        </div>
     </div>
 </div>
 
 <!-- QR MODAL -->
 <div id="qr-modal" class="fixed inset-0 z-[99999] items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeQRModal()"></div>
-    <div class="relative bg-white rounded-3xl shadow-2xl p-8 max-w-xs w-full text-center">
-        <button onclick="closeQRModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeQRModal()"></div>
+    <div class="relative rounded-3xl shadow-2xl p-8 max-w-xs w-full text-center" style="background:#1A1D2E;border:1px solid rgba(255,255,255,.1);">
+        <button onclick="closeQRModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-xl text-gray-400 hover:text-white transition-colors" style="background:rgba(255,255,255,.07);">
             <i class="fas fa-times"></i>
         </button>
-        <p class="font-bold text-gray-900 mb-1" id="qr-code-label"></p>
-        <p class="text-xs text-gray-400 mb-4" id="qr-code-desc"></p>
+        <p class="font-bold text-white mb-1" id="qr-code-label"></p>
+        <p class="text-xs mb-4" style="color:rgba(255,255,255,.4);" id="qr-code-desc"></p>
         <div id="qr-code-container" class="flex justify-center mb-4"></div>
-        <p class="font-mono text-sm font-bold text-gray-700 bg-gray-50 rounded-xl px-4 py-2" id="qr-code-text"></p>
+        <p class="font-mono text-sm font-bold rounded-xl px-4 py-2" style="color:#FF8A5B;background:rgba(255,87,34,.1);" id="qr-code-text"></p>
     </div>
 </div>
 
@@ -267,10 +438,11 @@
     function showToast(title, msg, type) {
         const t = document.getElementById('dash-toast');
         const icon = document.getElementById('dash-toast-icon');
-        const colors = { success:'bg-green-100 text-green-600', error:'bg-red-100 text-red-600', info:'bg-ocean-100 text-ocean-600', warning:'bg-amber-100 text-amber-600' };
+        const colors = { success:'rgba(74,222,128,.15)', error:'rgba(248,113,113,.15)', info:'rgba(96,165,250,.15)', warning:'rgba(251,191,36,.15)' };
+        const textColors = { success:'#4ADE80', error:'#F87171', info:'#60A5FA', warning:'#FBBF24' };
         const icons  = { success:'fa-check-circle', error:'fa-times-circle', info:'fa-info-circle', warning:'fa-exclamation-triangle' };
-        icon.className = 'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ' + (colors[type] || colors.info);
-        icon.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i>`;
+        icon.style.background = colors[type] || colors.info;
+        icon.innerHTML = `<i class="fas ${icons[type] || icons.info}" style="color:${textColors[type]||textColors.info};"></i>`;
         document.getElementById('dash-toast-title').textContent = title;
         document.getElementById('dash-toast-msg').textContent = msg;
         t.classList.remove('hidden');
@@ -348,16 +520,40 @@
         let pct = 0;
         let labelNext = 'Livello massimo!';
 
-        document.getElementById('xp-label-current').textContent = `XP: ${punti}`;
+        const labelCur = `XP: ${punti}`;
         if (xpNext !== null && xpNext !== undefined) {
             const nextLevelXP = punti + xpNext;
             pct = Math.min(100, Math.round(((punti - xpMin) / (nextLevelXP - xpMin)) * 100));
-            labelNext = `Prossimo livello: ${xpNext} XP mancanti`;
+            labelNext = `Prossimo: ${xpNext} XP mancanti`;
         } else {
             pct = 100;
         }
-        document.getElementById('xp-label-next').textContent = labelNext;
-        setTimeout(() => { document.getElementById('xp-bar').style.width = pct + '%'; }, 200);
+
+        // Update text labels
+        ['xp-label-current','xp-label-current-sm'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = labelCur;
+        });
+        ['xp-label-next','xp-label-next-sm'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = labelNext;
+        });
+
+        // Animate horizontal bar (mobile)
+        setTimeout(() => {
+            const bar = document.getElementById('xp-bar-sm');
+            if (bar) bar.style.width = pct + '%';
+        }, 200);
+
+        // Animate circular ring (desktop)
+        // Circumference = 2π × 50 = 314.16
+        setTimeout(() => {
+            const ring = document.getElementById('xp-ring-fill');
+            if (ring) {
+                const circ = 314.16;
+                ring.style.strokeDashoffset = circ - (circ * pct / 100);
+            }
+        }, 300);
     }
 
     function renderStats(u, challenges, coupons) {
@@ -380,24 +576,30 @@
             ptxt.textContent = `${done}/${challenges.length} completate`;
         }
 
-        const diffColor = { 'Facile':'text-green-600 bg-green-50 border-green-200', 'Media':'text-amber-600 bg-amber-50 border-amber-200', 'Difficile':'text-red-600 bg-red-50 border-red-200' };
+        const diffStyle = {
+            'Facile':   'color:#4ADE80;background:rgba(74,222,128,.1);',
+            'Media':    'color:#FBBF24;background:rgba(251,191,36,.1);',
+            'Difficile':'color:#F87171;background:rgba(248,113,113,.1);'
+        };
 
         grid.innerHTML = challenges.map(ch => `
-            <div class="challenge-card rounded-2xl border p-5 ${ch.completata ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200 hover:border-coral-200'}">
-                <div class="flex items-start justify-between mb-3">
-                    <span class="text-3xl">${ch.icon}</span>
-                    <span class="text-xs font-bold px-2 py-1 rounded-full border ${diffColor[ch.difficulty] || 'text-gray-600 bg-gray-100 border-gray-200'}">${ch.difficulty}</span>
+            <div class="ch-card ${ch.completata ? 'done' : ''}">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,.07);">
+                        <span class="text-xl">${ch.icon || '🏅'}</span>
+                    </div>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full" style="${diffStyle[ch.difficulty] || diffStyle['Facile']}">${ch.difficulty}</span>
                 </div>
-                <h3 class="font-bold text-gray-900 text-sm mb-1">${ch.title}</h3>
-                <p class="text-xs text-gray-500 mb-3 leading-relaxed">${ch.description}</p>
+                <h3 class="font-bold text-white text-sm mb-1.5">${ch.title}</h3>
+                <p class="text-xs leading-relaxed mb-4" style="color:rgba(255,255,255,.4);">${ch.description}</p>
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-coral-500 bg-coral-50 px-2 py-1 rounded-lg">+${ch.xp} XP</span>
-                        <span class="text-xs font-bold text-purple-500 bg-purple-50 px-2 py-1 rounded-lg">${ch.badge} ${ch.badgeName}</span>
+                        <span class="text-xs font-bold px-2 py-1 rounded-lg" style="color:#FF8A5B;background:rgba(255,87,34,.1);">+${ch.xp} XP</span>
+                        <span class="text-xs font-bold px-2 py-1 rounded-lg" style="color:#A78BFA;background:rgba(167,139,250,.1);">${ch.badge} ${ch.badgeName}</span>
                     </div>
                     ${ch.completata
-                        ? `<span class="text-xs font-black text-green-600 flex items-center gap-1"><i class="fas fa-check-circle"></i>Completata</span>`
-                        : `<button onclick="completeChallenge(${ch.id})" class="text-xs font-bold text-white bg-coral-500 hover:bg-coral-600 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1">
+                        ? `<span class="text-xs font-black flex items-center gap-1" style="color:#4ADE80;"><i class="fas fa-check-circle"></i>Completata</span>`
+                        : `<button onclick="completeChallenge(${ch.id})" class="text-xs font-bold text-white px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
                                <i class="fas fa-plus"></i>Segna
                            </button>`
                     }
@@ -441,34 +643,35 @@
         list.innerHTML = coupons.map(cp => {
             const isOcean = cp.tipo === 'Prenotazione';
             const statoBadge = cp.stato === 'Attivo'
-                ? '<span class="text-xs font-black text-green-600 bg-green-100 px-2 py-0.5 rounded-full">ATTIVO</span>'
+                ? '<span class="text-xs font-black px-2 py-0.5 rounded-full" style="color:#4ADE80;background:rgba(74,222,128,.15);">ATTIVO</span>'
                 : cp.stato === 'Usato'
-                    ? '<span class="text-xs font-black text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">USATO</span>'
-                    : '<span class="text-xs font-black text-red-400 bg-red-100 px-2 py-0.5 rounded-full">SCADUTO</span>';
+                    ? '<span class="text-xs font-black px-2 py-0.5 rounded-full" style="color:rgba(255,255,255,.3);background:rgba(255,255,255,.07);">USATO</span>'
+                    : '<span class="text-xs font-black px-2 py-0.5 rounded-full" style="color:#F87171;background:rgba(248,113,113,.1);">SCADUTO</span>';
 
-            return `<div class="coupon-card ${isOcean ? 'ocean' : ''} rounded-2xl p-5 text-white relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-8 translate-x-8 pointer-events-none"></div>
-                <div class="relative">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-white/70 text-xs font-semibold uppercase tracking-wider">${cp.tipo || 'Coupon'}</p>
-                            <p class="font-display font-black text-xl leading-tight">${cp.offerta || ''}</p>
+            return `<div class="wallet-scene">
+                <div class="wallet-card ${isOcean ? 'ocean-card' : 'coral-card'}">
+                    <div class="wallet-card-inner">
+                        <div class="flex justify-between items-start mb-5">
+                            <div>
+                                <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color:rgba(255,255,255,.6);">${cp.tipo || 'Coupon'}</p>
+                                <p class="font-display font-black text-xl text-white leading-tight">${cp.offerta || ''}</p>
+                            </div>
+                            ${statoBadge}
                         </div>
-                        ${statoBadge}
-                    </div>
-                    <div class="bg-white/10 rounded-xl p-3 mb-4">
-                        <p class="font-mono font-black text-base tracking-widest">${cp.code}</p>
-                        <p class="text-white/60 text-xs mt-0.5">${cp.palestra || ''}</p>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <p class="text-white/60 text-xs">Scade: ${cp.scadenza || '31/12/2026'}</p>
-                        ${cp.stato === 'Attivo'
-                            ? `<button onclick="openQRModal('${cp.code}','${(cp.offerta||'').replace(/'/g,'')}','${(cp.palestra||'').replace(/'/g,'')}')"
-                                class="text-xs font-bold bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5">
-                                    <i class="fas fa-qrcode"></i>QR Code
-                               </button>`
-                            : ''
-                        }
+                        <div class="rounded-xl p-3 mb-4" style="background:rgba(255,255,255,.12);backdrop-filter:blur(8px);">
+                            <p class="font-mono font-black text-base tracking-widest text-white">${cp.code}</p>
+                            <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.55);">${cp.palestra || ''}</p>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="text-xs" style="color:rgba(255,255,255,.5);">Scade: ${cp.scadenza || '31/12/2026'}</p>
+                            ${cp.stato === 'Attivo'
+                                ? `<button onclick="openQRModal('${cp.code}','${(cp.offerta||'').replace(/'/g,'')}','${(cp.palestra||'').replace(/'/g,'')}')"
+                                    class="text-xs font-bold px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5" style="background:rgba(255,255,255,.18);color:white;">
+                                        <i class="fas fa-qrcode"></i>QR Code
+                                   </button>`
+                                : ''
+                            }
+                        </div>
                     </div>
                 </div>
             </div>`;
@@ -484,8 +687,8 @@
         document.getElementById('qr-code-text').textContent  = code;
         modal.classList.add('open');
         try {
-            new QRCode(container, { text: code, width: 160, height: 160, colorDark: '#1F6B52', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
-        } catch(e) { container.innerHTML = '<p class="text-gray-400 text-sm">QR non disponibile</p>'; }
+            new QRCode(container, { text: code, width: 160, height: 160, colorDark: '#004B49', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+        } catch(e) { container.innerHTML = '<p style="color:rgba(255,255,255,.3);font-size:13px;">QR non disponibile</p>'; }
     };
 
     window.closeQRModal = function () {
@@ -497,30 +700,36 @@
         const empty = document.getElementById('buddy-empty');
         if (!buddies.length) { empty.classList.remove('hidden'); return; }
 
-        const fasciaColor = { 'Giovane (16-20)': 'bg-coral-100 text-coral-700', 'Over 60': 'bg-ocean-100 text-ocean-700', 'Altro': 'bg-gray-100 text-gray-700' };
-
         list.innerHTML = buddies.map(b => {
             const initials = ((b.nome || '?')[0] + (b.cognome || '?')[0]).toUpperCase();
             const isSameGym = b.stessaGym;
-            const fc = fasciaColor[b.fasciaEta] || 'bg-gray-100 text-gray-700';
-            return `<div class="buddy-card bg-white border ${isSameGym ? 'border-ocean-200' : 'border-gray-100'} rounded-2xl p-5 relative overflow-hidden shadow-sm">
-                ${isSameGym ? '<div class="absolute top-3 right-3"><span class="text-xs font-black text-ocean-600 bg-ocean-50 px-2 py-0.5 rounded-full border border-ocean-100">Stessa palestra</span></div>' : ''}
+            const isYouth = b.fasciaEta === 'Giovane (16-20)';
+            const avatarBg = isYouth
+                ? 'background:linear-gradient(135deg,#FF5722,#FF8A5B);'
+                : 'background:linear-gradient(135deg,#004B49,#1F6B52);';
+            const fasciaStyle = isYouth
+                ? 'color:#FF8A5B;background:rgba(255,87,34,.12);'
+                : 'color:#6EE7B7;background:rgba(0,75,73,.2);';
+
+            return `<div class="buddy-card ${isSameGym ? 'same-gym' : ''}">
+                ${isSameGym ? '<div class="mb-2"><span class="text-xs font-black px-2 py-0.5 rounded-full" style="color:#6EE7B7;background:rgba(0,75,73,.2);border:1px solid rgba(31,107,82,.3);">Stessa palestra</span></div>' : ''}
                 <div class="flex items-center gap-3 mb-3">
-                    <div class="w-12 h-12 rounded-2xl ${b.fasciaEta === 'Giovane (16-20)' ? 'bg-coral-500' : 'bg-ocean-700'} flex items-center justify-center text-white font-black text-lg flex-shrink-0">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-lg flex-shrink-0" style="${avatarBg}">
                         ${initials}
                     </div>
                     <div>
-                        <p class="font-bold text-gray-900">${b.nome} ${(b.cognome||'')[0]||''}.</p>
-                        <span class="text-xs font-bold px-2 py-0.5 rounded-full ${fc}">${b.fasciaEta}</span>
+                        <p class="font-bold text-white">${b.nome} ${(b.cognome||'')[0]||''}.</p>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="${fasciaStyle}">${b.fasciaEta}</span>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 text-xs text-gray-500">
-                    <i class="fas fa-map-marker-alt text-gray-300"></i>
+                <div class="flex items-center gap-2 text-xs mb-1" style="color:rgba(255,255,255,.35);">
+                    <i class="fas fa-map-marker-alt"></i>
                     <span>${b.gymName || 'Sede ANIF'}</span>
                 </div>
-                <div class="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                    <i class="fas fa-bolt text-gray-300"></i>
-                    <span>${b.livello || 'Principiante'} · ${b.punti || 0} XP</span>
+                <div class="flex items-center gap-2 text-xs" style="color:rgba(255,255,255,.35);">
+                    <i class="fas fa-bolt" style="color:#FF8A5B;"></i>
+                    <span style="color:rgba(255,255,255,.5);">${b.livello || 'Principiante'}</span>
+                    <span style="color:#FF8A5B;font-weight:700;">· ${b.punti || 0} XP</span>
                 </div>
             </div>`;
         }).join('');

@@ -4,38 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Move Together – ANIF Eurowellness | RiminiWellness 2026</title>
-    <meta name="description" content="Move Together: il progetto ANIF Eurowellness che unisce giovani (16-20) e Over 60 attraverso il movimento e il benessere. Scopri eventi, sedi e offerte speciali per RiminiWellness 2026.">
+    <meta name="description" content="Move Together: il progetto ANIF Eurowellness che unisce giovani (16-20) e Over 60 attraverso il movimento. RiminiWellness 2026.">
 
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        coral: { 50:'#FFF5F0', 100:'#FFE8DC', 200:'#FFCBB4', 400:'#FF8A5B', 500:'#FF6B35', 600:'#E55A25', 700:'#C44A1A' },
-                        ocean: { 50:'#F0F7F4', 100:'#D4EDE3', 600:'#2D8A6E', 700:'#1F6B52', 800:'#155240', 900:'#0D3B2E' }
+                        coral: { 50:'#FFF5F0',100:'#FFE8DC',200:'#FFCBB4',400:'#FF8A5B',500:'#FF5722',600:'#D84315',700:'#BF360C' },
+                        ocean: { 50:'#F0F7F4',100:'#D4EDE3',600:'#1F6B52',700:'#004B49',800:'#0D3B2E',900:'#081F16' }
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Poppins', 'sans-serif']
-                    }
+                    fontFamily: { sans:['Inter','sans-serif'], display:['Poppins','sans-serif'] }
                 }
             }
         }
     </script>
 
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Extra page-level keyframes */
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+        .animate-fade-up { animation: fadeInUp .7s ease both; }
+        .animate-fade-up-d1 { animation: fadeInUp .7s .1s ease both; }
+        .animate-fade-up-d2 { animation: fadeInUp .7s .2s ease both; }
+        .animate-fade-up-d3 { animation: fadeInUp .7s .35s ease both; }
+
+        /* Hero typography glow on main title */
+        .hero-title-coral {
+            background: linear-gradient(135deg, #FF5722, #FF8A5B, #FFB347);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 4px 24px rgba(255,87,34,.35));
+        }
+
+        /* Stat number style */
+        .hero-stat-num {
+            font-family: 'Poppins', sans-serif; font-weight: 900; font-size: 2rem;
+            line-height: 1;
+        }
+
+        /* Map section background */
+        #mappa { background: transparent; }
+
+        /* Stats dark box */
+        .stat-dark-box {
+            background: rgba(255,255,255,.09);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 18px; padding: 20px; text-align: center;
+            transition: background .3s, transform .3s;
+        }
+        .stat-dark-box:hover { background: rgba(255,255,255,.14); transform: translateY(-4px); }
+
+        /* Section dark panel */
+        .sci-panel {
+            background: rgba(9,12,20,.75);
+            border: 1px solid rgba(255,87,34,.15);
+            border-radius: 28px; padding: 40px 48px;
+            position: relative; overflow: hidden;
+            backdrop-filter: blur(18px);
+        }
+        .sci-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,87,34,.5), transparent);
+        }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="antialiased">
 
 <!-- ══════════════ NAVBAR ══════════════ -->
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-50">
@@ -43,242 +82,294 @@
         <div class="flex items-center justify-between h-16 md:h-20">
 
             <a href="#" class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-coral-500 flex items-center justify-center shadow-md">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
                     <i class="fas fa-running text-white text-base"></i>
                 </div>
                 <div class="leading-tight">
-                    <span class="block font-display font-black text-lg text-gray-900">Move Together</span>
-                    <span class="block text-xs text-coral-500 font-bold tracking-widest uppercase">ANIF Eurowellness</span>
+                    <span class="block font-display font-black text-lg" style="color:var(--text)">Move Together</span>
+                    <span class="block text-xs font-bold tracking-widest uppercase" style="color:var(--coral)">ANIF Eurowellness</span>
                 </div>
             </a>
 
             <div class="hidden md:flex items-center gap-6">
-                <a href="#progetto" class="nav-link text-gray-600 hover:text-coral-500 font-medium text-sm">Il Progetto</a>
-                <a href="#eventi" class="nav-link text-gray-600 hover:text-coral-500 font-medium text-sm">Eventi</a>
-                <a href="#mappa" class="nav-link text-gray-600 hover:text-coral-500 font-medium text-sm">Sedi</a>
-                <a href="#sfide" class="nav-link text-gray-600 hover:text-coral-500 font-medium text-sm">Sfide</a>
+                <a href="#progetto" class="nav-link font-medium text-sm" style="color:var(--text-muted)">Il Progetto</a>
+                <a href="#eventi"   class="nav-link font-medium text-sm" style="color:var(--text-muted)">Eventi</a>
+                <a href="#mappa"    class="nav-link font-medium text-sm" style="color:var(--text-muted)">Sedi</a>
+                <a href="#sfide"    class="nav-link font-medium text-sm" style="color:var(--text-muted)">Sfide</a>
                 <button id="dark-toggle" title="Modalità scura" aria-label="Cambia tema"></button>
             </div>
 
             <div class="hidden md:flex items-center gap-3">
                 <div id="nav-auth-guest" class="flex items-center gap-3">
-                    <button onclick="openAuthModal('login')" class="px-4 py-2 text-gray-600 hover:text-coral-500 font-medium text-sm border border-gray-200 rounded-xl hover:border-coral-300 transition-all">
+                    <button onclick="openAuthModal('login')" class="px-4 py-2 font-medium text-sm rounded-xl border transition-all hover:scale-105" style="color:var(--text-muted);border-color:var(--border-dk);background:var(--surface);backdrop-filter:blur(12px);">
                         <i class="fas fa-sign-in-alt mr-2"></i>Accedi
                     </button>
-                    <button onclick="openModal()" class="px-5 py-2.5 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-all hover:scale-105 shadow-sm">
+                    <button onclick="openModal()" class="px-5 py-2.5 text-white rounded-xl font-bold text-sm hover:scale-105 transition-all shadow-coral-btn" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
                         <i class="fas fa-ticket-alt mr-2"></i>Prenota Ora
                     </button>
                 </div>
                 <div id="nav-auth-user" class="hidden items-center gap-3">
-                    <a href="dashboard.html" class="flex items-center gap-2 px-4 py-2 bg-ocean-50 text-ocean-700 rounded-xl font-medium text-sm hover:bg-ocean-100 transition-colors border border-ocean-100">
+                    <a href="dashboard.html" class="flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-colors border" style="background:rgba(0,75,73,.10);color:var(--ocean-deep);border-color:rgba(0,75,73,.2);">
                         <i class="fas fa-user-circle"></i><span id="nav-username">Area Personale</span>
                     </a>
-                    <button onclick="authLogout()" class="px-3 py-2 text-gray-400 hover:text-red-500 text-sm transition-colors" title="Esci">
+                    <button onclick="authLogout()" class="px-3 py-2 text-sm transition-colors" style="color:var(--text-faint);" title="Esci">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
                 </div>
             </div>
 
-            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg transition-colors" style="color:var(--text-muted);">
                 <i class="fas fa-bars text-xl"></i>
             </button>
         </div>
     </div>
 
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-3 shadow-lg">
-        <a href="#progetto" class="block py-2 text-gray-700 font-medium hover:text-coral-500" onclick="closeMobileMenu()">Il Progetto</a>
-        <a href="#eventi" class="block py-2 text-gray-700 font-medium hover:text-coral-500" onclick="closeMobileMenu()">Eventi</a>
-        <a href="#mappa" class="block py-2 text-gray-700 font-medium hover:text-coral-500" onclick="closeMobileMenu()">Sedi</a>
-        <a href="#sfide" class="block py-2 text-gray-700 font-medium hover:text-coral-500" onclick="closeMobileMenu()">Sfide</a>
+    <div id="mobile-menu" class="hidden md:hidden border-t px-4 py-4 space-y-3 shadow-lg" style="background:rgba(250,248,245,.95);backdrop-filter:blur(18px);border-color:rgba(0,0,0,.06);">
+        <a href="#progetto" class="block py-2 font-medium hover:text-coral-500 transition-colors" style="color:var(--text-muted);" onclick="closeMobileMenu()">Il Progetto</a>
+        <a href="#eventi"   class="block py-2 font-medium hover:text-coral-500 transition-colors" style="color:var(--text-muted);" onclick="closeMobileMenu()">Eventi</a>
+        <a href="#mappa"    class="block py-2 font-medium hover:text-coral-500 transition-colors" style="color:var(--text-muted);" onclick="closeMobileMenu()">Sedi</a>
+        <a href="#sfide"    class="block py-2 font-medium hover:text-coral-500 transition-colors" style="color:var(--text-muted);" onclick="closeMobileMenu()">Sfide</a>
         <div class="flex items-center justify-between py-2">
-            <span class="text-gray-700 font-medium text-sm">Modalità scura</span>
-            <button id="dark-toggle-mobile" onclick="document.getElementById('dark-toggle').click()" class="w-10 h-[22px] rounded-full relative transition-colors" style="background:var(--border)">
+            <span class="font-medium text-sm" style="color:var(--text-muted);">Modalità scura</span>
+            <button id="dark-toggle-mobile" onclick="document.getElementById('dark-toggle').click()" class="w-10 h-[22px] rounded-full relative transition-colors" style="background:var(--border-dk)">
                 <span class="absolute top-[3px] left-[3px] w-4 h-4 rounded-full bg-white shadow transition-transform duration-300"></span>
             </button>
         </div>
         <div id="mob-auth-guest">
-            <button onclick="openAuthModal('login');closeMobileMenu()" class="w-full py-3 border border-gray-200 text-gray-700 rounded-xl font-bold mb-2">
+            <button onclick="openAuthModal('login');closeMobileMenu()" class="w-full py-3 border rounded-xl font-bold mb-2 transition-colors" style="color:var(--text);border-color:var(--border-dk);">
                 <i class="fas fa-sign-in-alt mr-2"></i>Accedi / Registrati
             </button>
-            <button onclick="openModal();closeMobileMenu()" class="w-full py-3 bg-coral-500 text-white rounded-xl font-bold">Prenota Ora</button>
+            <button onclick="openModal();closeMobileMenu()" class="w-full py-3 text-white rounded-xl font-bold" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">Prenota Ora</button>
         </div>
         <div id="mob-auth-user" class="hidden space-y-2">
-            <a href="dashboard.html" onclick="closeMobileMenu()" class="block w-full py-3 bg-ocean-700 text-white rounded-xl font-bold text-center">
+            <a href="dashboard.html" onclick="closeMobileMenu()" class="block w-full py-3 text-white rounded-xl font-bold text-center" style="background:linear-gradient(135deg,#004B49,#1F6B52);">
                 <i class="fas fa-user-circle mr-2"></i>La Mia Area
             </a>
-            <button onclick="openModal();closeMobileMenu()" class="w-full py-3 bg-coral-500 text-white rounded-xl font-bold">Prenota Ora</button>
-            <button onclick="authLogout();closeMobileMenu()" class="w-full py-2 text-gray-400 text-sm">Esci dall'account</button>
+            <button onclick="openModal();closeMobileMenu()" class="w-full py-3 text-white rounded-xl font-bold" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">Prenota Ora</button>
+            <button onclick="authLogout();closeMobileMenu()" class="w-full py-2 text-sm" style="color:var(--text-faint);">Esci dall'account</button>
         </div>
     </div>
 </nav>
 
 <!-- ══════════════ HERO ══════════════ -->
 <section id="hero" class="hero-section min-h-screen flex items-center relative overflow-hidden">
+    <!-- Zone backgrounds -->
+    <div class="hero-youth-zone"></div>
+    <div class="hero-senior-zone"></div>
+    <div class="hero-diagonal"></div>
+    <!-- Animated blobs -->
     <div class="hero-blob-1"></div>
     <div class="hero-blob-2"></div>
+    <div class="hero-blob-3"></div>
 
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 w-full">
-        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16 w-full">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+            <!-- Left: Content -->
             <div>
+                <!-- Audience split badges -->
+                <div class="flex items-center gap-3 mb-6 animate-fade-up flex-wrap">
+                    <span class="badge-youth"><i class="fas fa-bolt text-xs"></i>16–20 anni</span>
+                    <span style="color:var(--text-faint);font-size:.75rem;">×</span>
+                    <span class="badge-senior"><i class="fas fa-heart text-xs"></i>Over 60</span>
+                </div>
 
-                <h1 class="font-display font-black text-6xl lg:text-7xl xl:text-8xl text-gray-900 leading-none mb-4">
-                    Move<br><span class="text-coral-500">Together</span>
+                <h1 class="font-display font-black leading-none mb-5 animate-fade-up-d1" style="font-size:clamp(3.2rem,8vw,5.5rem);">
+                    <span style="color:var(--text);">Move</span><br>
+                    <span class="hero-title-coral">Together</span>
                 </h1>
-                <p class="text-2xl text-gray-700 font-semibold mb-3">Il benessere non ha età.</p>
-                <p class="text-lg text-gray-500 leading-relaxed mb-10 max-w-xl">
-                    Uniamo giovani dai <strong class="text-coral-500">16 ai 20 anni</strong> e gli <strong class="text-ocean-700">Over 60</strong>
+                <p class="font-semibold mb-2 animate-fade-up-d2" style="font-size:1.25rem;color:var(--text);">Il benessere non ha età.</p>
+                <p class="leading-relaxed mb-10 max-w-xl animate-fade-up-d2" style="font-size:1.05rem;color:var(--text-muted);">
+                    Uniamo giovani dai <strong style="color:var(--coral);">16 ai 20 anni</strong> e gli <strong style="color:var(--ocean-deep);">Over 60</strong>
                     attraverso il movimento. Più salute, più connessione, meno solitudine.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 mb-8">
-                    <button onclick="openModal('giovani')" class="group flex items-center justify-center gap-3 px-7 py-4 bg-coral-500 text-white rounded-2xl font-bold text-base hover:bg-coral-600 transition-all hover:scale-105 shadow-coral-btn">
-                        <i class="fas fa-bolt text-yellow-300"></i>Sono un Giovane (16-20)
+
+                <div class="flex flex-col sm:flex-row gap-4 mb-10 animate-fade-up-d3">
+                    <button onclick="openModal('giovani')" class="group flex items-center justify-center gap-3 px-7 py-4 text-white rounded-2xl font-bold text-base transition-all shadow-coral-btn" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
+                        <i class="fas fa-bolt text-yellow-300"></i>
+                        <span>Sono un Giovane (16-20)</span>
                         <i class="fas fa-arrow-right text-sm opacity-60 group-hover:translate-x-1 transition-transform"></i>
                     </button>
-                    <button onclick="openModal('senior')" class="group flex items-center justify-center gap-3 px-7 py-4 bg-ocean-700 text-white rounded-2xl font-bold text-base hover:bg-ocean-800 transition-all hover:scale-105 shadow-ocean-btn">
-                        <i class="fas fa-heart text-green-300"></i>Sono un Over 60
+                    <button onclick="openModal('senior')" class="group flex items-center justify-center gap-3 px-7 py-4 text-white rounded-2xl font-bold text-base transition-all shadow-ocean-btn" style="background:linear-gradient(135deg,#004B49,#1F6B52);">
+                        <i class="fas fa-heart text-green-300"></i>
+                        <span>Sono un Over 60</span>
                         <i class="fas fa-arrow-right text-sm opacity-60 group-hover:translate-x-1 transition-transform"></i>
                     </button>
                 </div>
 
-                <!-- Countdown RiminiWellness -->
-                <div class="mb-10">
-                    <p class="text-xs font-bold text-coral-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                        <i class="fas fa-clock"></i>RiminiWellness 2026 · 28 Maggio
+                <!-- Countdown -->
+                <div class="mb-10 animate-fade-up-d3">
+                    <p class="text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2" style="color:var(--coral);">
+                        <i class="fas fa-satellite-dish animate-pulse"></i>RiminiWellness 2026 · 28 Maggio
                     </p>
                     <div class="flex gap-3">
-                        <div class="countdown-box">
-                            <span id="cd-days" class="countdown-num">00</span>
-                            <span class="countdown-label">Giorni</span>
-                        </div>
-                        <div class="countdown-box">
-                            <span id="cd-hours" class="countdown-num">00</span>
-                            <span class="countdown-label">Ore</span>
-                        </div>
-                        <div class="countdown-box">
-                            <span id="cd-mins" class="countdown-num">00</span>
-                            <span class="countdown-label">Minuti</span>
-                        </div>
-                        <div class="countdown-box">
-                            <span id="cd-secs" class="countdown-num">00</span>
-                            <span class="countdown-label">Secondi</span>
-                        </div>
+                        <div class="countdown-box"><span id="cd-days"  class="countdown-num">00</span><span class="countdown-label">Giorni</span></div>
+                        <div class="countdown-box"><span id="cd-hours" class="countdown-num">00</span><span class="countdown-label">Ore</span></div>
+                        <div class="countdown-box"><span id="cd-mins"  class="countdown-num">00</span><span class="countdown-label">Minuti</span></div>
+                        <div class="countdown-box"><span id="cd-secs"  class="countdown-num">00</span><span class="countdown-label">Secondi</span></div>
                     </div>
                 </div>
 
-                <div class="flex flex-wrap gap-8">
-                    <div><span class="font-display font-black text-3xl text-coral-500">200+</span><p class="text-sm text-gray-500 mt-0.5">Centri Aderenti</p></div>
-                    <div><span class="font-display font-black text-3xl text-ocean-700">50+</span><p class="text-sm text-gray-500 mt-0.5">Città in Italia</p></div>
-                    <div id="live-counter"><span class="font-display font-black text-3xl text-gray-800">–</span><p class="text-sm text-gray-500 mt-0.5">Iscritti live</p></div>
+                <!-- Live stats -->
+                <div class="flex flex-wrap gap-8 animate-fade-up-d3">
+                    <div>
+                        <p class="hero-stat-num" style="color:var(--coral);">200+</p>
+                        <p class="text-sm mt-1" style="color:var(--text-muted);">Centri Aderenti</p>
+                    </div>
+                    <div>
+                        <p class="hero-stat-num" style="color:var(--ocean-deep);">50+</p>
+                        <p class="text-sm mt-1" style="color:var(--text-muted);">Città in Italia</p>
+                    </div>
+                    <div id="live-counter">
+                        <p class="hero-stat-num" style="color:var(--text);">–</p>
+                        <p class="text-sm mt-1" style="color:var(--text-muted);">Iscritti live 🟢</p>
+                    </div>
                 </div>
             </div>
+
+            <!-- Right: Floating card -->
             <div class="hidden lg:block">
                 <div class="hero-card-wrap relative">
-                    <div class="hero-card-main bg-white rounded-3xl p-7 shadow-2xl">
+                    <div class="hero-card-main rounded-3xl p-7">
                         <div class="flex items-center gap-3 mb-5">
-                            <div class="w-12 h-12 bg-coral-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-dumbbell text-coral-500 text-xl"></i>
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:rgba(255,87,34,.12);">
+                                <i class="fas fa-dumbbell text-base" style="color:var(--coral);"></i>
                             </div>
-                            <div><p class="font-bold text-gray-900">Sessione Condivisa</p><p class="text-xs text-gray-400">Oggi · Centro FitLife Roma</p></div>
-                            <span class="ml-auto bg-green-100 text-green-700 text-xs font-black px-2 py-1 rounded-full">LIVE</span>
+                            <div>
+                                <p class="font-bold" style="color:var(--text);">Sessione Condivisa</p>
+                                <p class="text-xs" style="color:var(--text-faint);">Oggi · Centro FitLife Roma</p>
+                            </div>
+                            <span class="ml-auto text-xs font-black px-2 py-1 rounded-full" style="background:#D1FAE5;color:#059669;">LIVE</span>
                         </div>
                         <div class="space-y-3 mb-5">
-                            <div class="flex items-center gap-3 p-3 bg-coral-50 rounded-xl border border-coral-100">
-                                <div class="w-9 h-9 bg-coral-400 rounded-full flex items-center justify-center text-white font-black text-sm">M</div>
-                                <div><p class="text-sm font-bold text-gray-900">Marco, 17 anni</p><p class="text-xs text-gray-400">Gym Buddy · Giovane</p></div>
-                                <i class="fas fa-star text-coral-400 ml-auto"></i>
+                            <div class="flex items-center gap-3 p-3 rounded-xl border" style="background:rgba(255,87,34,.06);border-color:rgba(255,87,34,.14);">
+                                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm" style="background:var(--coral);">M</div>
+                                <div>
+                                    <p class="text-sm font-bold" style="color:var(--text);">Marco, 17 anni</p>
+                                    <p class="text-xs" style="color:var(--text-faint);">Gym Buddy · Giovane</p>
+                                </div>
+                                <i class="fas fa-star ml-auto" style="color:var(--coral);"></i>
                             </div>
-                            <div class="flex items-center gap-3 p-3 bg-ocean-50 rounded-xl border border-ocean-100">
-                                <div class="w-9 h-9 bg-ocean-600 rounded-full flex items-center justify-center text-white font-black text-sm">G</div>
-                                <div><p class="text-sm font-bold text-gray-900">Giuseppe, 67 anni</p><p class="text-xs text-gray-400">Gym Buddy · Senior</p></div>
-                                <i class="fas fa-heart text-ocean-600 ml-auto"></i>
+                            <div class="flex items-center gap-3 p-3 rounded-xl border" style="background:rgba(0,75,73,.06);border-color:rgba(0,75,73,.14);">
+                                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm" style="background:var(--ocean-deep);">G</div>
+                                <div>
+                                    <p class="text-sm font-bold" style="color:var(--text);">Giuseppe, 67 anni</p>
+                                    <p class="text-xs" style="color:var(--text-faint);">Gym Buddy · Senior</p>
+                                </div>
+                                <i class="fas fa-heart ml-auto" style="color:var(--ocean-deep);"></i>
                             </div>
                         </div>
-                        <div class="bg-gray-50 rounded-xl p-3">
+                        <div class="rounded-xl p-3" style="background:rgba(0,0,0,.04);">
                             <div class="flex justify-between text-xs mb-2">
-                                <span class="text-gray-500">Sfida: 10.000 passi condivisi</span>
-                                <span class="font-bold text-coral-500">7.200 / 10.000</span>
+                                <span style="color:var(--text-muted);">Sfida: 10.000 passi condivisi</span>
+                                <span class="font-bold" style="color:var(--coral);">7.200 / 10.000</span>
                             </div>
-                            <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-                                <div class="hero-progress h-full bg-gradient-to-r from-coral-400 to-coral-600 rounded-full" style="width:72%"></div>
+                            <div class="h-2 rounded-full overflow-hidden" style="background:rgba(0,0,0,.08);">
+                                <div class="hero-progress h-full rounded-full" style="width:72%;background:linear-gradient(90deg,#FF5722,#FF8A5B);"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="floating-badge absolute -top-5 -right-5 bg-coral-500 text-white rounded-2xl p-4 shadow-xl">
-                        <span class="text-2xl block mb-1">🏅</span><p class="text-xs font-black leading-tight">Badge<br>Sbloccato!</p>
+
+                    <div class="floating-badge absolute -top-5 -right-5 text-white rounded-2xl p-4 shadow-xl" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
+                        <span class="text-2xl block mb-1">🏅</span>
+                        <p class="text-xs font-black leading-tight">Badge<br>Sbloccato!</p>
                     </div>
-                    <div class="floating-stat absolute -bottom-5 -left-5 bg-white rounded-2xl p-4 shadow-xl border border-gray-100">
+                    <div class="floating-stat absolute -bottom-5 -left-5 rounded-2xl p-4 shadow-xl border" style="background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-color:rgba(255,255,255,.7);">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 bg-ocean-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-chart-line text-ocean-600 text-sm"></i>
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:rgba(0,75,73,.10);">
+                                <i class="fas fa-chart-line text-sm" style="color:var(--ocean-deep);"></i>
                             </div>
-                            <div><p class="text-xs text-gray-400">Energia media</p><p class="font-black text-gray-900 text-sm">+34% ↑</p></div>
+                            <div>
+                                <p class="text-xs" style="color:var(--text-faint);">Energia media</p>
+                                <p class="font-black text-sm" style="color:var(--text);">+34% ↑</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-400 text-xs font-medium tracking-widest uppercase">
+
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-xs font-medium tracking-widest uppercase" style="color:var(--text-faint);">
         <span>Scopri</span><i class="fas fa-chevron-down animate-bounce"></i>
     </div>
 </section>
 
 <!-- ══════════════ IL PROGETTO & VALORI ══════════════ -->
-<section id="progetto" class="py-24 bg-white">
+<section id="progetto" class="py-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 reveal">
-            <span class="chip bg-coral-50 text-coral-600">Il Concept</span>
-            <h2 class="font-display font-black text-4xl lg:text-5xl text-gray-900 mt-4 mb-5">Perché <span class="text-coral-500">Move Together</span>?</h2>
-            <p class="text-xl text-gray-500 max-w-3xl mx-auto leading-relaxed">Due generazioni, un obiettivo comune. La scienza e l'umanità ci dicono che insieme si va più lontano.</p>
+            <span class="chip" style="background:rgba(255,87,34,.10);color:var(--coral);">Il Concept</span>
+            <h2 class="font-display font-black mt-4 mb-5" style="font-size:clamp(2rem,5vw,3.2rem);color:var(--text);">
+                Perché <span class="gradient-text">Move Together</span>?
+            </h2>
+            <p class="text-xl max-w-3xl mx-auto leading-relaxed" style="color:var(--text-muted);">Due generazioni, un obiettivo comune. La scienza e l'umanità ci dicono che insieme si va più lontano.</p>
         </div>
+
         <div class="grid md:grid-cols-3 gap-8 mb-16">
-            <div class="value-card reveal bg-gradient-to-br from-coral-50 to-orange-50 border border-coral-100 rounded-3xl p-8">
-                <div class="w-14 h-14 bg-coral-500 rounded-2xl flex items-center justify-center mb-5"><i class="fas fa-bolt text-white text-xl"></i></div>
-                <div class="chip bg-coral-200 text-coral-700 mb-4">Gen Z · 16-20 anni</div>
-                <h3 class="font-display font-bold text-xl text-gray-900 mb-3">Energia & Valori</h3>
-                <p class="text-gray-600 leading-relaxed text-sm">I giovani portano entusiasmo e innovazione. Allenarsi con un Senior insegna pazienza, resilienza e la bellezza del movimento come abitudine di vita.</p>
-                <ul class="mt-5 space-y-2 text-sm text-gray-500">
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-coral-500 text-xs"></i>Sconti su abbonamenti</li>
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-coral-500 text-xs"></i>Badge e gamification</li>
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-coral-500 text-xs"></i>Life coaching intergenerazionale</li>
+            <!-- Youth card -->
+            <div class="value-card reveal glass rounded-3xl p-8" style="border:1px solid rgba(255,87,34,.18);">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shadow-coral-btn" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
+                    <i class="fas fa-bolt text-white text-xl"></i>
+                </div>
+                <div class="chip mb-4" style="background:rgba(255,87,34,.12);color:var(--coral);">Gen Z · 16-20 anni</div>
+                <h3 class="font-display font-bold text-xl mb-3" style="color:var(--text);">Energia & Valori</h3>
+                <p class="leading-relaxed text-sm mb-5" style="color:var(--text-muted);">I giovani portano entusiasmo e innovazione. Allenarsi con un Senior insegna pazienza, resilienza e la bellezza del movimento come abitudine di vita.</p>
+                <ul class="space-y-2 text-sm" style="color:var(--text-muted);">
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-xs" style="color:var(--coral);"></i>Sconti su abbonamenti</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-xs" style="color:var(--coral);"></i>Badge e gamification</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-xs" style="color:var(--coral);"></i>Life coaching intergenerazionale</li>
                 </ul>
             </div>
-            <div class="value-card reveal bg-gradient-to-br from-gray-900 to-ocean-900 rounded-3xl p-8 text-white md:mt-8">
-                <div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-5"><i class="fas fa-infinity text-coral-400 text-xl"></i></div>
-                <div class="chip bg-white/10 text-white/80 mb-4">Lo Scambio Generazionale</div>
+
+            <!-- Bridge card (dark) -->
+            <div class="value-card reveal rounded-3xl p-8 text-white md:mt-8 relative overflow-hidden" style="background:linear-gradient(145deg,#0D1117,#1A1D27);border:1px solid rgba(255,87,34,.15);">
+                <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(255,87,34,.5),transparent);"></div>
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background:rgba(255,255,255,.08);">
+                    <i class="fas fa-infinity text-xl" style="color:var(--coral);"></i>
+                </div>
+                <div class="chip mb-4" style="background:rgba(255,255,255,.10);color:rgba(255,255,255,.8);">Lo Scambio Generazionale</div>
                 <h3 class="font-display font-bold text-xl text-white mb-3">Il Ponte ANIF</h3>
-                <p class="text-gray-300 leading-relaxed text-sm">ANIF Eurowellness crede che lo sport sia il linguaggio universale. Le "Palestre della Salute" sono i luoghi dove le generazioni si incontrano e si rafforzano.</p>
-                <ul class="mt-5 space-y-2 text-sm text-gray-400">
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-coral-400 text-xs"></i>Open Day gratuiti</li>
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-coral-400 text-xs"></i>Sessioni condivise guidate</li>
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-coral-400 text-xs"></i>200+ centri in Italia</li>
+                <p class="leading-relaxed text-sm mb-5" style="color:rgba(255,255,255,.6);">ANIF Eurowellness crede che lo sport sia il linguaggio universale. Le "Palestre della Salute" sono i luoghi dove le generazioni si incontrano e si rafforzano.</p>
+                <ul class="space-y-2 text-sm" style="color:rgba(255,255,255,.55);">
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-xs" style="color:var(--coral);"></i>Open Day gratuiti</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-xs" style="color:var(--coral);"></i>Sessioni condivise guidate</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-xs" style="color:var(--coral);"></i>200+ centri in Italia</li>
                 </ul>
             </div>
-            <div class="value-card reveal bg-gradient-to-br from-ocean-50 to-blue-50 border border-ocean-100 rounded-3xl p-8">
-                <div class="w-14 h-14 bg-ocean-700 rounded-2xl flex items-center justify-center mb-5"><i class="fas fa-heart text-white text-xl"></i></div>
-                <div class="chip bg-ocean-100 text-ocean-700 mb-4">Senior · Over 60</div>
-                <h3 class="font-display font-bold text-xl text-gray-900 mb-3">Longevità Attiva</h3>
-                <p class="text-gray-600 leading-relaxed text-sm">Per gli Over 60, muoversi con i giovani significa ritrovare vitalità, combattere la sedentarietà e sentirsi parte di una comunità che li valorizza.</p>
-                <ul class="mt-5 space-y-2 text-sm text-gray-500">
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-ocean-600 text-xs"></i>Percorsi personalizzati</li>
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-ocean-600 text-xs"></i>Ginnastica dolce e posturale</li>
-                    <li class="flex items-center gap-2"><i class="fas fa-check text-ocean-600 text-xs"></i>Connessione sociale profonda</li>
+
+            <!-- Senior card -->
+            <div class="value-card reveal glass rounded-3xl p-8" style="border:1px solid rgba(0,75,73,.18);">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shadow-ocean-btn" style="background:linear-gradient(135deg,#004B49,#1F6B52);">
+                    <i class="fas fa-heart text-white text-xl"></i>
+                </div>
+                <div class="chip mb-4" style="background:rgba(0,75,73,.10);color:var(--ocean-deep);">Senior · Over 60</div>
+                <h3 class="font-display font-bold text-xl mb-3" style="color:var(--text);">Longevità Attiva</h3>
+                <p class="leading-relaxed text-sm mb-5" style="color:var(--text-muted);">Per gli Over 60, muoversi con i giovani significa ritrovare vitalità, combattere la sedentarietà e sentirsi parte di una comunità che li valorizza.</p>
+                <ul class="space-y-2 text-sm" style="color:var(--text-muted);">
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-xs" style="color:var(--ocean-deep);"></i>Percorsi personalizzati</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-xs" style="color:var(--ocean-deep);"></i>Ginnastica dolce e posturale</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-xs" style="color:var(--ocean-deep);"></i>Connessione sociale profonda</li>
                 </ul>
             </div>
         </div>
-        <div class="reveal bg-gradient-to-r from-gray-900 via-gray-900 to-ocean-900 rounded-3xl p-10 lg:p-14 text-white">
+
+        <!-- Science panel -->
+        <div class="reveal sci-panel">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div>
-                    <span class="text-coral-400 font-bold text-sm uppercase tracking-widest">La Scienza lo Conferma</span>
-                    <h3 class="font-display font-black text-3xl lg:text-4xl mt-3 mb-5 leading-tight">L'attività fisica condivisa riduce la solitudine degli Over 60 del <span class="text-coral-400">40%</span></h3>
-                    <p class="text-gray-300 leading-relaxed mb-6">Studi OMS e ricerche universitarie dimostrano che programmi di attività fisica intergenerazionale migliorano mobilità, qualità della vita e salute mentale per entrambe le fasce d'età.</p>
-                    <a href="https://anifeurowellness.it/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-coral-400 font-bold hover:text-coral-300 transition-colors text-sm">Scopri le iniziative ANIF <i class="fas fa-external-link-alt text-xs"></i></a>
+                    <span class="text-sm font-bold uppercase tracking-widest" style="color:var(--coral);">La Scienza lo Conferma</span>
+                    <h3 class="font-display font-black mt-3 mb-5 leading-tight" style="font-size:clamp(1.6rem,4vw,2.4rem);color:white;">
+                        L'attività fisica condivisa riduce la solitudine degli Over 60 del <span style="color:var(--coral);">40%</span>
+                    </h3>
+                    <p class="leading-relaxed mb-6 text-sm" style="color:rgba(255,255,255,.6);">Studi OMS e ricerche universitarie dimostrano che programmi di attività fisica intergenerazionale migliorano mobilità, qualità della vita e salute mentale per entrambe le fasce d'età.</p>
+                    <a href="https://anifeurowellness.it/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 font-bold hover:opacity-80 transition-opacity text-sm" style="color:var(--coral);">Scopri le iniziative ANIF <i class="fas fa-external-link-alt text-xs"></i></a>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white/10 rounded-2xl p-5 text-center"><span class="font-display font-black text-4xl text-coral-400">-40%</span><p class="text-gray-300 text-xs mt-2">Riduzione solitudine negli Over 60</p></div>
-                    <div class="bg-white/10 rounded-2xl p-5 text-center"><span class="font-display font-black text-4xl text-ocean-100">+28%</span><p class="text-gray-300 text-xs mt-2">Costanza allenamento nei giovani</p></div>
-                    <div class="bg-white/10 rounded-2xl p-5 text-center"><span class="font-display font-black text-4xl text-yellow-400">3x</span><p class="text-gray-300 text-xs mt-2">Più motivazione con un partner</p></div>
-                    <div class="bg-white/10 rounded-2xl p-5 text-center"><span class="font-display font-black text-4xl text-green-400">85%</span><p class="text-gray-300 text-xs mt-2">Soddisfazione nei partecipanti</p></div>
+                    <div class="stat-dark-box"><span class="font-display font-black text-4xl" style="color:var(--coral);">-40%</span><p class="text-xs mt-2" style="color:rgba(255,255,255,.5);">Solitudine negli Over 60</p></div>
+                    <div class="stat-dark-box"><span class="font-display font-black text-4xl" style="color:#93C5FD;">+28%</span><p class="text-xs mt-2" style="color:rgba(255,255,255,.5);">Costanza nei giovani</p></div>
+                    <div class="stat-dark-box"><span class="font-display font-black text-4xl" style="color:#FCD34D;">3x</span><p class="text-xs mt-2" style="color:rgba(255,255,255,.5);">Più motivazione in coppia</p></div>
+                    <div class="stat-dark-box"><span class="font-display font-black text-4xl" style="color:#6EE7B7;">85%</span><p class="text-xs mt-2" style="color:rgba(255,255,255,.5);">Soddisfazione partecipanti</p></div>
                 </div>
             </div>
         </div>
@@ -286,69 +377,91 @@
 </section>
 
 <!-- ══════════════ EVENTI & PROMOZIONI ══════════════ -->
-<section id="eventi" class="py-24 bg-gray-50">
+<section id="eventi" class="py-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12 reveal">
-            <span class="chip bg-coral-50 text-coral-600">Offerte Speciali</span>
-            <h2 class="font-display font-black text-4xl lg:text-5xl text-gray-900 mt-4 mb-5">Eventi & <span class="text-coral-500">Promozioni</span></h2>
-            <p class="text-xl text-gray-500 max-w-2xl mx-auto">Iniziative esclusive per chi sceglie di muoversi insieme. Filtra per categoria.</p>
+            <span class="chip" style="background:rgba(255,87,34,.10);color:var(--coral);">Offerte Speciali</span>
+            <h2 class="font-display font-black mt-4 mb-5" style="font-size:clamp(2rem,5vw,3.2rem);color:var(--text);">
+                Eventi & <span class="gradient-text">Promozioni</span>
+            </h2>
+            <p class="text-xl max-w-2xl mx-auto" style="color:var(--text-muted);">Iniziative esclusive per chi sceglie di muoversi insieme.</p>
         </div>
         <div class="flex flex-wrap justify-center gap-3 mb-12 reveal">
-            <button class="filter-btn active" data-filter="tutti" onclick="filterEvents('tutti')"><i class="fas fa-globe mr-2"></i>Tutti</button>
-            <button class="filter-btn" data-filter="giovani" onclick="filterEvents('giovani')"><i class="fas fa-bolt mr-2"></i>Per Giovani</button>
-            <button class="filter-btn" data-filter="senior" onclick="filterEvents('senior')"><i class="fas fa-heart mr-2"></i>Per Over 60</button>
-            <button class="filter-btn" data-filter="intergenerazionale" onclick="filterEvents('intergenerazionale')"><i class="fas fa-infinity mr-2"></i>Intergenerazionali</button>
+            <button class="filter-btn active" data-filter="tutti"              onclick="filterEvents('tutti')"><i class="fas fa-globe mr-2"></i>Tutti</button>
+            <button class="filter-btn" data-filter="giovani"                  onclick="filterEvents('giovani')"><i class="fas fa-bolt mr-2"></i>Per Giovani</button>
+            <button class="filter-btn" data-filter="senior"                   onclick="filterEvents('senior')"><i class="fas fa-heart mr-2"></i>Per Over 60</button>
+            <button class="filter-btn" data-filter="intergenerazionale"       onclick="filterEvents('intergenerazionale')"><i class="fas fa-infinity mr-2"></i>Intergenerazionali</button>
         </div>
         <div id="events-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </div>
 </section>
 
-<!-- ══════════════ MAPPA INTERATTIVA ══════════════ -->
-<section id="mappa" class="py-24 bg-white">
+<!-- ══════════════ MAPPA ══════════════ -->
+<section id="mappa" class="py-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-14 reveal">
-            <span class="chip bg-ocean-50 text-ocean-700">Network Italia</span>
-            <h2 class="font-display font-black text-4xl lg:text-5xl text-gray-900 mt-4 mb-5">Trova la tua <span class="text-ocean-700">Sede ANIF</span></h2>
-            <p class="text-xl text-gray-500 max-w-2xl mx-auto">Oltre 200 centri sportivi aderiscono a Move Together. Clicca su un marker per scoprire le promozioni attive.</p>
+            <span class="chip" style="background:rgba(0,75,73,.10);color:var(--ocean-deep);">Network Italia</span>
+            <h2 class="font-display font-black mt-4 mb-5" style="font-size:clamp(2rem,5vw,3.2rem);color:var(--text);">
+                Trova la tua <span class="gradient-text-ocean">Sede ANIF</span>
+            </h2>
+            <p class="text-xl max-w-2xl mx-auto" style="color:var(--text-muted);">Oltre 200 centri sportivi aderiscono a Move Together. Clicca su un marker per scoprire le promozioni attive.</p>
         </div>
-        <div class="reveal relative rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
+        <div class="reveal relative rounded-3xl overflow-hidden shadow-2xl" style="border:1px solid var(--border);">
             <div id="map" style="height:560px;"></div>
-            <div class="absolute bottom-6 left-6 bg-white rounded-2xl p-4 shadow-lg z-map-legend">
-                <p class="font-bold text-xs text-gray-700 mb-3 uppercase tracking-wider">Legenda</p>
-                <div class="space-y-2 text-xs text-gray-600">
-                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-coral-500 flex-shrink-0"></span>Centro Partner</div>
-                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-ocean-700 flex-shrink-0"></span>Sede Principale</div>
+            <div class="absolute bottom-6 left-6 rounded-2xl p-4 shadow-lg z-map-legend glass">
+                <p class="font-bold text-xs mb-3 uppercase tracking-wider" style="color:var(--text-muted);">Legenda</p>
+                <div class="space-y-2 text-xs" style="color:var(--text-muted);">
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full flex-shrink-0" style="background:var(--coral);"></span>Centro Partner</div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full flex-shrink-0" style="background:var(--ocean-deep);"></span>Sede Principale</div>
                 </div>
             </div>
         </div>
-        <div id="selected-gym-bar" class="hidden mt-6 bg-gradient-to-r from-ocean-50 to-coral-50 border border-ocean-100 rounded-2xl p-6">
+        <div id="selected-gym-bar" class="hidden mt-6 rounded-2xl p-6" style="background:linear-gradient(135deg,rgba(0,75,73,.08),rgba(255,87,34,.06));border:1px solid rgba(255,87,34,.15);">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-ocean-700 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fas fa-map-marker-alt text-white"></i></div>
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:var(--grad-ocean);"><i class="fas fa-map-marker-alt text-white"></i></div>
                     <div>
-                        <p id="sgym-name" class="font-bold text-gray-900 text-lg leading-tight"></p>
-                        <p id="sgym-address" class="text-gray-500 text-sm mt-0.5"></p>
+                        <p id="sgym-name" class="font-bold text-lg leading-tight" style="color:var(--text);"></p>
+                        <p id="sgym-address" class="text-sm mt-0.5" style="color:var(--text-muted);"></p>
                     </div>
                 </div>
-                <button onclick="openModal()" class="flex-shrink-0 px-6 py-3 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-colors"><i class="fas fa-ticket-alt mr-2"></i>Prenota in questa sede</button>
+                <button onclick="openModal()" class="flex-shrink-0 px-6 py-3 text-white rounded-xl font-bold text-sm transition-all hover:scale-105 shadow-coral-btn" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
+                    <i class="fas fa-ticket-alt mr-2"></i>Prenota in questa sede
+                </button>
             </div>
         </div>
     </div>
 </section>
 
 <!-- ══════════════ GAMIFICATION / SFIDE ══════════════ -->
-<section id="sfide" class="py-24 bg-gray-900 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section id="sfide" class="py-24 relative overflow-hidden" style="background:linear-gradient(145deg,#0A0E1A,#0D1117,#0A1410);">
+    <!-- Neon accents -->
+    <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(255,87,34,.4),rgba(0,75,73,.4),transparent);"></div>
+    <div class="absolute" style="top:10%;right:-5%;width:380px;height:380px;background:radial-gradient(circle,rgba(255,87,34,.07) 0%,transparent 70%);filter:blur(50px);pointer-events:none;"></div>
+    <div class="absolute" style="bottom:5%;left:-5%;width:300px;height:300px;background:radial-gradient(circle,rgba(0,75,73,.08) 0%,transparent 70%);filter:blur(50px);pointer-events:none;"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="text-center mb-14 reveal">
-            <span class="chip bg-white/10 text-coral-400">Community & Gamification</span>
-            <h2 class="font-display font-black text-4xl lg:text-5xl mt-4 mb-5">Sfide della <span class="text-coral-400">Settimana</span></h2>
-            <p class="text-xl text-gray-400 max-w-2xl mx-auto">Completa le sfide, sblocca badge esclusivi e ottieni sconti extra da usare in palestra.</p>
+            <span class="chip" style="background:rgba(255,87,34,.15);color:var(--coral);">Community & Gamification</span>
+            <h2 class="font-display font-black mt-4 mb-5 text-white" style="font-size:clamp(2rem,5vw,3.2rem);">
+                Sfide della <span class="gradient-text">Settimana</span>
+            </h2>
+            <p class="text-xl max-w-2xl mx-auto" style="color:rgba(255,255,255,.5);">Completa le sfide, sblocca badge esclusivi e ottieni sconti extra da usare in palestra.</p>
         </div>
+
         <div id="challenges-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-14"></div>
-        <div class="reveal bg-white/5 border border-white/10 rounded-3xl p-8 lg:p-12">
+
+        <!-- Badges panel -->
+        <div class="reveal rounded-3xl p-8 lg:p-12 relative overflow-hidden" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
+            <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(255,87,34,.35),transparent);"></div>
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 mb-8">
-                <div><h3 class="font-display font-bold text-2xl">I tuoi Badge</h3><p class="text-gray-400 text-sm mt-1">Completa le sfide per sbloccarli tutti!</p></div>
-                <button onclick="openModal()" class="px-6 py-3 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-colors"><i class="fas fa-ticket-alt mr-2"></i>Riscatta i premi</button>
+                <div>
+                    <h3 class="font-display font-bold text-2xl text-white">I tuoi Badge</h3>
+                    <p class="text-sm mt-1" style="color:rgba(255,255,255,.45);">Completa le sfide per sbloccarli tutti!</p>
+                </div>
+                <button onclick="openModal()" class="px-6 py-3 text-white rounded-xl font-bold text-sm transition-all hover:scale-105 shadow-coral-btn" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
+                    <i class="fas fa-ticket-alt mr-2"></i>Riscatta i premi
+                </button>
             </div>
             <div id="badges-grid" class="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-3"></div>
         </div>
@@ -356,15 +469,21 @@
 </section>
 
 <!-- ══════════════ FOOTER ══════════════ -->
-<footer class="bg-gray-950 text-white py-16">
+<footer class="py-16 relative overflow-hidden" style="background:#070A12;">
+    <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(255,87,34,.3),transparent);"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
             <div class="lg:col-span-2">
                 <div class="flex items-center gap-3 mb-5">
-                    <div class="w-12 h-12 rounded-xl bg-coral-500 flex items-center justify-center"><i class="fas fa-running text-white text-xl"></i></div>
-                    <div><span class="block font-display font-black text-2xl">Move Together</span><span class="block text-xs text-coral-400 tracking-widest uppercase">ANIF Eurowellness</span></div>
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
+                        <i class="fas fa-running text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="block font-display font-black text-2xl text-white">Move Together</span>
+                        <span class="block text-xs font-bold tracking-widest uppercase" style="color:var(--coral);">ANIF Eurowellness</span>
+                    </div>
                 </div>
-                <p class="text-gray-400 leading-relaxed text-sm mb-6 max-w-xs">Progetto ufficiale ANIF Eurowellness per RiminiWellness 2026. Uniamo le generazioni attraverso il movimento.</p>
+                <p class="leading-relaxed text-sm mb-6 max-w-xs" style="color:rgba(255,255,255,.4);">Progetto ufficiale ANIF Eurowellness per RiminiWellness 2026. Uniamo le generazioni attraverso il movimento.</p>
                 <div class="flex gap-3">
                     <a href="https://anifeurowellness.it/" target="_blank" rel="noopener" class="footer-social" title="Sito ANIF"><i class="fas fa-globe text-sm"></i></a>
                     <a href="#" class="footer-social" title="Facebook"><i class="fab fa-facebook-f text-sm"></i></a>
@@ -373,51 +492,52 @@
                 </div>
             </div>
             <div>
-                <h4 class="font-bold text-sm uppercase tracking-wider text-gray-400 mb-4">Navigazione</h4>
-                <ul class="space-y-3 text-gray-400 text-sm">
-                    <li><a href="#progetto" class="hover:text-coral-400 transition-colors">Il Progetto</a></li>
-                    <li><a href="#eventi" class="hover:text-coral-400 transition-colors">Eventi & Promozioni</a></li>
-                    <li><a href="#mappa" class="hover:text-coral-400 transition-colors">Sedi ANIF</a></li>
-                    <li><a href="#sfide" class="hover:text-coral-400 transition-colors">Sfide della Settimana</a></li>
+                <h4 class="font-bold text-sm uppercase tracking-wider mb-4" style="color:rgba(255,255,255,.3);">Navigazione</h4>
+                <ul class="space-y-3 text-sm" style="color:rgba(255,255,255,.4);">
+                    <li><a href="#progetto" class="hover:text-white transition-colors">Il Progetto</a></li>
+                    <li><a href="#eventi"   class="hover:text-white transition-colors">Eventi & Promozioni</a></li>
+                    <li><a href="#mappa"    class="hover:text-white transition-colors">Sedi ANIF</a></li>
+                    <li><a href="#sfide"    class="hover:text-white transition-colors">Sfide della Settimana</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-bold text-sm uppercase tracking-wider text-gray-400 mb-4">ANIF Eurowellness</h4>
-                <ul class="space-y-3 text-gray-400 text-sm">
-                    <li><a href="https://anifeurowellness.it/" target="_blank" rel="noopener" class="hover:text-coral-400 transition-colors">Sito Ufficiale</a></li>
-                    <li><a href="https://anifeurowellness.it/" target="_blank" rel="noopener" class="hover:text-coral-400 transition-colors">Palestre della Salute</a></li>
-                    <li><a href="#" class="hover:text-coral-400 transition-colors">Privacy Policy</a></li>
-                    <li><a href="admin.html" class="hover:text-coral-400 transition-colors opacity-30 hover:opacity-100">⚙ Staff</a></li>
+                <h4 class="font-bold text-sm uppercase tracking-wider mb-4" style="color:rgba(255,255,255,.3);">ANIF Eurowellness</h4>
+                <ul class="space-y-3 text-sm" style="color:rgba(255,255,255,.4);">
+                    <li><a href="https://anifeurowellness.it/" target="_blank" rel="noopener" class="hover:text-white transition-colors">Sito Ufficiale</a></li>
+                    <li><a href="https://anifeurowellness.it/" target="_blank" rel="noopener" class="hover:text-white transition-colors">Palestre della Salute</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="admin.html" class="transition-colors opacity-25 hover:opacity-100 hover:text-white">⚙ Staff</a></li>
                 </ul>
             </div>
         </div>
-        <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-3 text-gray-500 text-xs">
+        <div class="border-t pt-8 flex flex-col md:flex-row items-center justify-between gap-3 text-xs" style="border-color:rgba(255,255,255,.07);color:rgba(255,255,255,.25);">
             <p>© 2026 Move Together – ANIF Eurowellness. Tutti i diritti riservati.</p>
-            <p>Presentato a <span class="text-white font-semibold">RiminiWellness 2026</span> <span class="mx-2 text-coral-500">·</span>
-               <a href="https://anifeurowellness.it/" target="_blank" rel="noopener" class="text-coral-400 hover:text-coral-300 font-semibold">anifeurowellness.it</a>
+            <p>Presentato a <span class="text-white font-semibold">RiminiWellness 2026</span>
+               <span class="mx-2" style="color:var(--coral);">·</span>
+               <a href="https://anifeurowellness.it/" target="_blank" rel="noopener" class="font-semibold hover:text-white transition-colors" style="color:var(--coral);">anifeurowellness.it</a>
             </p>
         </div>
     </div>
 </footer>
 
-<!-- ══════════════ TOAST NOTIFICATION ══════════════ -->
+<!-- ══════════════ TOAST ══════════════ -->
 <div id="toast" class="fixed bottom-6 right-6 z-[99999] hidden">
-    <div id="toast-inner" class="bg-white rounded-2xl shadow-2xl p-4 flex items-center gap-3 min-w-64 border border-gray-100">
+    <div id="toast-inner" class="bg-white rounded-2xl shadow-2xl p-4 flex items-center gap-3 min-w-64 border" style="border-color:rgba(0,0,0,.06);">
         <div id="toast-icon" class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"></div>
-        <div><p id="toast-title" class="font-bold text-sm text-gray-900"></p><p id="toast-msg" class="text-xs text-gray-500 mt-0.5"></p></div>
+        <div><p id="toast-title" class="font-bold text-sm" style="color:var(--text);"></p><p id="toast-msg" class="text-xs mt-0.5" style="color:var(--text-muted);"></p></div>
     </div>
 </div>
 
-<!-- ══════════════ MODAL OVERLAY ══════════════ -->
+<!-- ══════════════ MODAL ══════════════ -->
 <div id="modal-overlay" class="fixed inset-0 z-[9999] hidden items-center justify-center p-4">
     <div id="modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
-    <div id="modal-box" class="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[92vh] overflow-y-auto"></div>
+    <div id="modal-box" class="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg"></div>
 </div>
 
-<!-- ══════════════ STATUS BAR (anti-sleep indicator) ══════════════ -->
+<!-- ══════════════ STATUS BAR ══════════════ -->
 <div id="status-bar" class="fixed bottom-6 left-6 z-50 hidden">
-    <div class="bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg border border-gray-100 flex items-center gap-2 text-xs text-gray-500">
-        <span id="status-dot" class="w-2 h-2 rounded-full bg-green-400 animate-pulse flex-shrink-0"></span>
+    <div class="glass rounded-xl px-3 py-2 shadow-lg flex items-center gap-2 text-xs" style="color:var(--text-muted);">
+        <span id="status-dot" class="w-2 h-2 rounded-full flex-shrink-0 animate-pulse" style="background:#4ADE80;"></span>
         <span id="status-text">Server online</span>
     </div>
 </div>
@@ -426,149 +546,87 @@
 <div id="auth-modal-overlay" class="fixed inset-0 z-[99998] hidden items-center justify-center p-4">
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeAuthModal()"></div>
     <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md max-h-[92vh] overflow-y-auto">
-        <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all z-10">
+        <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-xl transition-all z-10" style="color:var(--text-faint);">
             <i class="fas fa-times"></i>
         </button>
         <div class="p-8">
             <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 bg-coral-500 rounded-2xl flex items-center justify-center shadow-md">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
                     <i class="fas fa-user text-white"></i>
                 </div>
                 <div>
-                    <h2 class="font-display font-black text-2xl text-gray-900">Move Together</h2>
-                    <p class="text-sm text-gray-400">Area Riservata ANIF</p>
+                    <h2 class="font-display font-black text-2xl" style="color:var(--text);">Move Together</h2>
+                    <p class="text-sm" style="color:var(--text-faint);">Area Riservata ANIF</p>
                 </div>
             </div>
-
-            <!-- Tabs -->
-            <div class="flex bg-gray-100 rounded-2xl p-1 mb-6">
-                <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2.5 rounded-xl font-bold text-sm transition-all bg-white text-gray-900 shadow-sm">
-                    Accedi
-                </button>
-                <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2.5 rounded-xl font-bold text-sm transition-all text-gray-500">
-                    Registrati
-                </button>
+            <div class="flex rounded-2xl p-1 mb-6" style="background:rgba(0,0,0,.05);">
+                <button id="tab-login"    onclick="switchAuthTab('login')"    class="flex-1 py-2.5 rounded-xl font-bold text-sm transition-all bg-white shadow-sm" style="color:var(--text);">Accedi</button>
+                <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2.5 rounded-xl font-bold text-sm transition-all" style="color:var(--text-faint);">Registrati</button>
             </div>
-
-            <!-- Login form -->
             <form id="auth-login-form" onsubmit="doLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
-                    <input type="email" id="login-email" required autocomplete="email"
-                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
-                        placeholder="la-tua@email.it">
+                    <label class="block text-sm font-semibold mb-1.5" style="color:var(--text);">Email</label>
+                    <input type="email" id="login-email" required autocomplete="email" class="form-input" placeholder="la-tua@email.it">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
-                    <input type="password" id="login-password" required autocomplete="current-password"
-                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
-                        placeholder="••••••••">
+                    <label class="block text-sm font-semibold mb-1.5" style="color:var(--text);">Password</label>
+                    <input type="password" id="login-password" required autocomplete="current-password" class="form-input" placeholder="••••••••">
                 </div>
-                <div id="login-error" class="hidden text-red-600 text-sm bg-red-50 rounded-xl px-4 py-3 border border-red-100"></div>
-                <button type="submit" id="login-btn"
-                    class="w-full py-3.5 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-all hover:scale-[1.02] shadow-sm flex items-center justify-center gap-2">
+                <div id="login-error" class="hidden text-sm rounded-xl px-4 py-3 border" style="color:#DC2626;background:#FEF2F2;border-color:#FECACA;"></div>
+                <button type="submit" id="login-btn" class="w-full py-3.5 text-white rounded-xl font-bold text-sm transition-all hover:scale-[1.02] shadow-coral-btn flex items-center justify-center gap-2" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
                     <i class="fas fa-sign-in-alt"></i>Accedi
                 </button>
-                <p class="text-center text-sm text-gray-400">Non hai un account?
-                    <button type="button" onclick="switchAuthTab('register')" class="text-coral-500 font-bold hover:text-coral-600">Registrati gratis</button>
+                <p class="text-center text-sm" style="color:var(--text-faint);">Non hai un account?
+                    <button type="button" onclick="switchAuthTab('register')" class="font-bold" style="color:var(--coral);">Registrati gratis</button>
                 </p>
             </form>
-
-            <!-- Register form -->
             <form id="auth-register-form" onsubmit="doRegister(event)" class="space-y-4 hidden">
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nome</label>
-                        <input type="text" id="reg-nome" required autocomplete="given-name"
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
-                            placeholder="Marco">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Cognome</label>
-                        <input type="text" id="reg-cognome" required autocomplete="family-name"
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
-                            placeholder="Rossi">
-                    </div>
+                    <div><label class="block text-sm font-semibold mb-1.5" style="color:var(--text);">Nome</label><input type="text" id="reg-nome" required autocomplete="given-name" class="form-input" placeholder="Marco"></div>
+                    <div><label class="block text-sm font-semibold mb-1.5" style="color:var(--text);">Cognome</label><input type="text" id="reg-cognome" required autocomplete="family-name" class="form-input" placeholder="Rossi"></div>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
-                    <input type="email" id="reg-email" required autocomplete="email"
-                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
-                        placeholder="la-tua@email.it">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
-                    <input type="password" id="reg-password" required autocomplete="new-password" minlength="6"
-                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
-                        placeholder="min. 6 caratteri">
-                </div>
+                <div><label class="block text-sm font-semibold mb-1.5" style="color:var(--text);">Email</label><input type="email" id="reg-email" required autocomplete="email" class="form-input" placeholder="la-tua@email.it"></div>
+                <div><label class="block text-sm font-semibold mb-1.5" style="color:var(--text);">Password</label><input type="password" id="reg-password" required autocomplete="new-password" minlength="6" class="form-input" placeholder="min. 6 caratteri"></div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Età</label>
-                        <input type="number" id="reg-eta" required min="14" max="100"
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
-                            placeholder="25">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Palestra</label>
-                        <select id="reg-gym"
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all bg-white">
-                            <option value="">— Seleziona —</option>
-                        </select>
-                    </div>
+                    <div><label class="block text-sm font-semibold mb-1.5" style="color:var(--text);">Età</label><input type="number" id="reg-eta" required min="14" max="100" class="form-input" placeholder="25"></div>
+                    <div><label class="block text-sm font-semibold mb-1.5" style="color:var(--text);">Palestra</label><select id="reg-gym" class="form-input"><option value="">— Seleziona —</option></select></div>
                 </div>
-                <div id="register-error" class="hidden text-red-600 text-sm bg-red-50 rounded-xl px-4 py-3 border border-red-100"></div>
-                <button type="submit" id="register-btn"
-                    class="w-full py-3.5 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-all hover:scale-[1.02] shadow-sm flex items-center justify-center gap-2">
+                <div id="register-error" class="hidden text-sm rounded-xl px-4 py-3 border" style="color:#DC2626;background:#FEF2F2;border-color:#FECACA;"></div>
+                <button type="submit" id="register-btn" class="w-full py-3.5 text-white rounded-xl font-bold text-sm transition-all hover:scale-[1.02] shadow-coral-btn flex items-center justify-center gap-2" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
                     <i class="fas fa-user-plus"></i>Crea Account
                 </button>
-                <p class="text-center text-xs text-gray-400">Registrandoti accetti di partecipare al progetto Move Together ANIF Eurowellness.</p>
+                <p class="text-center text-xs" style="color:var(--text-faint);">Registrandoti accetti di partecipare al progetto Move Together ANIF Eurowellness.</p>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="app.js"></script>
 <script>
-// ── AUTH SYSTEM ────────────────────────────────────────────────────────────────
 (function () {
     'use strict';
-
     const API = '';
-
     function getToken()  { return localStorage.getItem('mt_token'); }
     function getUser()   { try { return JSON.parse(localStorage.getItem('mt_user') || 'null'); } catch { return null; } }
-    function saveAuth(token, user) {
-        localStorage.setItem('mt_token', token);
-        localStorage.setItem('mt_user', JSON.stringify(user));
-    }
-    function clearAuth() {
-        localStorage.removeItem('mt_token');
-        localStorage.removeItem('mt_user');
-    }
+    function saveAuth(token, user) { localStorage.setItem('mt_token', token); localStorage.setItem('mt_user', JSON.stringify(user)); }
+    function clearAuth() { localStorage.removeItem('mt_token'); localStorage.removeItem('mt_user'); }
 
     function updateNavbar() {
         const user = getUser();
-        const guestEl   = document.getElementById('nav-auth-guest');
-        const userEl    = document.getElementById('nav-auth-user');
-        const mobGuest  = document.getElementById('mob-auth-guest');
-        const mobUser   = document.getElementById('mob-auth-user');
-        const nameEl    = document.getElementById('nav-username');
-
+        const guestEl  = document.getElementById('nav-auth-guest');
+        const userEl   = document.getElementById('nav-auth-user');
+        const mobGuest = document.getElementById('mob-auth-guest');
+        const mobUser  = document.getElementById('mob-auth-user');
+        const nameEl   = document.getElementById('nav-username');
         if (user) {
-            guestEl.classList.add('hidden');
-            userEl.classList.remove('hidden');
-            userEl.classList.add('flex');
+            guestEl.classList.add('hidden'); userEl.classList.remove('hidden'); userEl.classList.add('flex');
             if (mobGuest) mobGuest.classList.add('hidden');
             if (mobUser)  mobUser.classList.remove('hidden');
             if (nameEl)   nameEl.textContent = user.nome || 'Area Personale';
         } else {
-            guestEl.classList.remove('hidden');
-            userEl.classList.add('hidden');
-            userEl.classList.remove('flex');
+            guestEl.classList.remove('hidden'); userEl.classList.add('hidden'); userEl.classList.remove('flex');
             if (mobGuest) mobGuest.classList.remove('hidden');
             if (mobUser)  mobUser.classList.add('hidden');
         }
@@ -577,166 +635,93 @@
     window.checkAuthState = function () {
         updateNavbar();
         const params = new URLSearchParams(window.location.search);
-        if (params.get('login') === '1' && !getToken()) {
-            openAuthModal('login');
-        }
+        if (params.get('login') === '1' && !getToken()) openAuthModal('login');
     };
 
     window.openAuthModal = function (tab) {
         tab = tab || 'login';
         const overlay = document.getElementById('auth-modal-overlay');
-        overlay.classList.remove('hidden');
-        overlay.classList.add('flex');
-        switchAuthTab(tab);
-        populateGymSelect();
+        overlay.classList.remove('hidden'); overlay.classList.add('flex');
+        switchAuthTab(tab); populateGymSelect();
         document.body.style.overflow = 'hidden';
     };
-
     window.closeAuthModal = function () {
         const overlay = document.getElementById('auth-modal-overlay');
-        overlay.classList.add('hidden');
-        overlay.classList.remove('flex');
+        overlay.classList.add('hidden'); overlay.classList.remove('flex');
         document.body.style.overflow = '';
     };
-
     window.switchAuthTab = function (tab) {
-        const loginForm = document.getElementById('auth-login-form');
-        const regForm   = document.getElementById('auth-register-form');
-        const tabLogin  = document.getElementById('tab-login');
-        const tabReg    = document.getElementById('tab-register');
-
+        const lf = document.getElementById('auth-login-form');
+        const rf = document.getElementById('auth-register-form');
+        const tl = document.getElementById('tab-login');
+        const tr = document.getElementById('tab-register');
         if (tab === 'login') {
-            loginForm.classList.remove('hidden');
-            regForm.classList.add('hidden');
-            tabLogin.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
-            tabLogin.classList.remove('text-gray-500');
-            tabReg.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
-            tabReg.classList.add('text-gray-500');
+            lf.classList.remove('hidden'); rf.classList.add('hidden');
+            tl.classList.add('bg-white','shadow-sm'); tl.style.color='var(--text)';
+            tr.classList.remove('bg-white','shadow-sm'); tr.style.color='var(--text-faint)';
         } else {
-            loginForm.classList.add('hidden');
-            regForm.classList.remove('hidden');
-            tabReg.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
-            tabReg.classList.remove('text-gray-500');
-            tabLogin.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
-            tabLogin.classList.add('text-gray-500');
+            lf.classList.add('hidden'); rf.classList.remove('hidden');
+            tr.classList.add('bg-white','shadow-sm'); tr.style.color='var(--text)';
+            tl.classList.remove('bg-white','shadow-sm'); tl.style.color='var(--text-faint)';
         }
         document.getElementById('login-error').classList.add('hidden');
         document.getElementById('register-error').classList.add('hidden');
     };
-
     function populateGymSelect() {
         const sel = document.getElementById('reg-gym');
         if (!sel || sel.options.length > 1) return;
-        if (typeof GYMS !== 'undefined') {
-            GYMS.forEach(g => {
-                const opt = document.createElement('option');
-                opt.value = g.id;
-                opt.textContent = g.name + ' – ' + g.city;
-                sel.appendChild(opt);
-            });
-        }
+        if (typeof GYMS !== 'undefined') GYMS.forEach(g => { const o = document.createElement('option'); o.value = g.id; o.textContent = g.name; sel.appendChild(o); });
     }
-
     function setLoading(btn, loading) {
-        if (loading) {
-            btn.disabled = true;
-            btn.dataset.orig = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Attendere…';
-        } else {
-            btn.disabled = false;
-            btn.innerHTML = btn.dataset.orig || btn.innerHTML;
-        }
+        if (loading) { btn.disabled = true; btn.dataset.orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Attendere…'; }
+        else { btn.disabled = false; btn.innerHTML = btn.dataset.orig || btn.innerHTML; }
     }
-
     window.doLogin = async function (e) {
         e.preventDefault();
         const btn = document.getElementById('login-btn');
         const errEl = document.getElementById('login-error');
-        errEl.classList.add('hidden');
-        setLoading(btn, true);
+        errEl.classList.add('hidden'); setLoading(btn, true);
         try {
-            const res = await fetch(API + '/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email:    document.getElementById('login-email').value.trim(),
-                    password: document.getElementById('login-password').value
-                })
-            });
+            const res = await fetch(API + '/api/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: document.getElementById('login-email').value.trim(), password: document.getElementById('login-password').value }) });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Credenziali non valide');
-            saveAuth(data.token, data.user);
-            updateNavbar();
-            closeAuthModal();
+            saveAuth(data.token, data.user); updateNavbar(); closeAuthModal();
             if (typeof showToast === 'function') showToast('Bentornato!', 'Accesso effettuato con successo', 'success');
             setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
-        } catch (err) {
-            errEl.textContent = err.message;
-            errEl.classList.remove('hidden');
-        } finally {
-            setLoading(btn, false);
-        }
+        } catch (err) { errEl.textContent = err.message; errEl.classList.remove('hidden'); }
+        finally { setLoading(btn, false); }
     };
-
     window.doRegister = async function (e) {
         e.preventDefault();
         const btn = document.getElementById('register-btn');
         const errEl = document.getElementById('register-error');
-        errEl.classList.add('hidden');
-        setLoading(btn, true);
+        errEl.classList.add('hidden'); setLoading(btn, true);
         try {
-            const res = await fetch(API + '/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    nome:     document.getElementById('reg-nome').value.trim(),
-                    cognome:  document.getElementById('reg-cognome').value.trim(),
-                    email:    document.getElementById('reg-email').value.trim(),
-                    password: document.getElementById('reg-password').value,
-                    eta:      parseInt(document.getElementById('reg-eta').value, 10),
-                    gymId:    document.getElementById('reg-gym').value || null
-                })
-            });
+            const res = await fetch(API + '/api/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ nome: document.getElementById('reg-nome').value.trim(), cognome: document.getElementById('reg-cognome').value.trim(), email: document.getElementById('reg-email').value.trim(), password: document.getElementById('reg-password').value, eta: parseInt(document.getElementById('reg-eta').value, 10), gymId: document.getElementById('reg-gym').value || null }) });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Errore registrazione');
-            saveAuth(data.token, data.user);
-            updateNavbar();
-            closeAuthModal();
+            saveAuth(data.token, data.user); updateNavbar(); closeAuthModal();
             if (typeof showToast === 'function') showToast('Benvenuto in Move Together!', 'Account creato con successo 🎉', 'success');
             setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
-        } catch (err) {
-            errEl.textContent = err.message;
-            errEl.classList.remove('hidden');
-        } finally {
-            setLoading(btn, false);
-        }
+        } catch (err) { errEl.textContent = err.message; errEl.classList.remove('hidden'); }
+        finally { setLoading(btn, false); }
     };
-
     window.authLogout = function () {
-        clearAuth();
-        updateNavbar();
+        clearAuth(); updateNavbar();
         if (typeof showToast === 'function') showToast('Arrivederci!', 'Disconnesso con successo', 'info');
     };
-
-    // Intercept openModal: require login before booking
     window.addEventListener('load', () => {
         const _orig = window.openModal;
         window.openModal = function (type) {
             if (!getToken()) {
                 openAuthModal('login');
-                // show hint message
                 const errEl = document.getElementById('login-error');
-                if (errEl) {
-                    errEl.textContent = 'Effettua il login per partecipare e sbloccare i tuoi vantaggi!';
-                    errEl.classList.remove('hidden');
-                }
+                if (errEl) { errEl.textContent = 'Effettua il login per partecipare e sbloccare i tuoi vantaggi!'; errEl.classList.remove('hidden'); }
                 return;
             }
             if (typeof _orig === 'function') _orig(type);
         };
     });
-
-    // Init after app.js has run
     window.addEventListener('DOMContentLoaded', () => { setTimeout(checkAuthState, 50); });
 })();
 </script>

@@ -302,7 +302,8 @@
             if (!meRes.ok) throw new Error('Errore caricamento profilo');
 
             userData = await meRes.json();
-            challengesData = chRes.ok ? await chRes.json() : [];
+            const chRaw = chRes.ok ? await chRes.json() : {};
+            challengesData = Array.isArray(chRaw) ? chRaw : (chRaw.challenges || []);
             couponsData    = cpRes.ok ? await cpRes.json() : [];
             const buddies  = buRes.ok ? await buRes.json() : [];
 
@@ -365,6 +366,7 @@
     }
 
     function renderChallenges(challenges) {
+        if (!Array.isArray(challenges)) challenges = [];
         const grid = document.getElementById('challenges-grid');
         const pill = document.getElementById('challenges-progress-pill');
         const ptxt = document.getElementById('ch-progress-text');
@@ -414,14 +416,14 @@
             if (!res.ok) throw new Error(data.error || 'Errore');
 
             userData = data.user;
-            challengesData = challengesData.map(c => c.id === id ? { ...c, completata: true } : c);
+            challengesData = (Array.isArray(challengesData) ? challengesData : []).map(c => c.id === id ? { ...c, completata: true } : c);
 
             renderHero(userData);
             animateXPBar(userData);
             renderStats(userData, challengesData, couponsData);
             renderChallenges(challengesData);
 
-            showToast('Sfida completata!', `+${data.xpGuadagnati} XP · Badge: ${data.badgeNome}`, 'success');
+            showToast('Sfida completata!', `+${data.xpGuadagnati} XP · Badge: ${data.badge}`, 'success');
         } catch (err) {
             if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-plus"></i>Segna'; }
             showToast('Errore', err.message, 'error');
@@ -496,7 +498,7 @@
 
         list.innerHTML = buddies.map(b => {
             const initials = ((b.nome || '?')[0] + (b.cognome || '?')[0]).toUpperCase();
-            const isSameGym = b.sameGym;
+            const isSameGym = b.stessaGym;
             const fc = fasciaColor[b.fasciaEta] || 'bg-gray-100 text-gray-700';
             return `<div class="buddy-card bg-white border ${isSameGym ? 'border-ocean-200' : 'border-gray-100'} rounded-2xl p-5 relative overflow-hidden shadow-sm">
                 ${isSameGym ? '<div class="absolute top-3 right-3"><span class="text-xs font-black text-ocean-600 bg-ocean-50 px-2 py-0.5 rounded-full border border-ocean-100">Stessa palestra</span></div>' : ''}
@@ -511,7 +513,7 @@
                 </div>
                 <div class="flex items-center gap-2 text-xs text-gray-500">
                     <i class="fas fa-map-marker-alt text-gray-300"></i>
-                    <span>${b.palestra || 'Palestra non specificata'}</span>
+                    <span>${b.gymName || 'Sede ANIF'}</span>
                 </div>
                 <div class="flex items-center gap-2 text-xs text-gray-500 mt-1">
                     <i class="fas fa-bolt text-gray-300"></i>

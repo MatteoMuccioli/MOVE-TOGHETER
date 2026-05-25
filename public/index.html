@@ -688,6 +688,24 @@
         if (typeof showToast === 'function') showToast('Arrivederci!', 'Disconnesso con successo', 'info');
     };
 
+    // Intercept openModal: require login before booking
+    window.addEventListener('load', () => {
+        const _orig = window.openModal;
+        window.openModal = function (type) {
+            if (!getToken()) {
+                openAuthModal('login');
+                // show hint message
+                const errEl = document.getElementById('login-error');
+                if (errEl) {
+                    errEl.textContent = 'Effettua il login per partecipare e sbloccare i tuoi vantaggi!';
+                    errEl.classList.remove('hidden');
+                }
+                return;
+            }
+            if (typeof _orig === 'function') _orig(type);
+        };
+    });
+
     // Init after app.js has run
     window.addEventListener('DOMContentLoaded', () => { setTimeout(checkAuthState, 50); });
 })();

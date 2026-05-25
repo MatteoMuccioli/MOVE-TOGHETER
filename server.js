@@ -282,8 +282,10 @@ app.post('/api/prenota', async (req, res) => {
         const pren = readJSON(PREN_F); pren.push({ ...coupon, name, timestamp: coupon.createdAt }); writeJSON(PREN_F, pren);
 
         const ed = { name, age, email, ageGroup, gymName: gymN, gymAddress: gymA, offer, code };
-        const emailSent = await sendEmail(email, `Il tuo Coupon Move Together – ${code}`, buildUserEmail(ed));
+        // Fire-and-forget: non blocca la risposta HTTP
+        sendEmail(email, `Il tuo Coupon Move Together – ${code}`, buildUserEmail(ed)).catch(() => {});
         if (process.env.ANIF_EMAIL) sendEmail(process.env.ANIF_EMAIL, `Nuova Prenotazione – ${name}`, buildAdminEmail(ed)).catch(() => {});
+        const emailSent = true;
 
         res.json({ success: true, code, ageGroup, gymName: gymN, gymAddress: gymA, emailSent, message: 'Prenotazione confermata!' });
     } catch (err) { console.error('prenota:', err); res.status(500).json({ success: false, message: 'Errore del server.' }); }
@@ -330,7 +332,8 @@ app.get('/api/admin/stats', adminMiddleware, (req, res) => {
 
     const challengeStats = CHALLENGES.map(ch => ({
         id: ch.id, title: ch.title, badge: ch.badge, xp: ch.xp,
-        completions: utenti.filter(u => (u.sfideCompletate || []).includes(ch.id)).length
+        difficulty: ch.difficulty, icon: ch.icon,
+        completamenti: utenti.filter(u => (u.sfideCompletate || []).includes(ch.id)).length
     }));
 
     res.json({

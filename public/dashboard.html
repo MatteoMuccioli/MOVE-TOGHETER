@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Mia Area – Move Together</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: { 50:'#FFF5F0',100:'#FFE8DC',200:'#FFCBB4',400:'#FF8A5B',500:'#FF6B35',600:'#E55A25',700:'#C44A1A' },
+                        ocean: { 50:'#F0F7F4',100:'#D4EDE3',600:'#2D8A6E',700:'#1F6B52',800:'#155240',900:'#0D3B2E' }
+                    },
+                    fontFamily: { sans:['Inter','sans-serif'], display:['Poppins','sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dash-section { animation: fadeUp .5s ease both; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+        .dash-section:nth-child(2) { animation-delay:.08s }
+        .dash-section:nth-child(3) { animation-delay:.16s }
+        .dash-section:nth-child(4) { animation-delay:.24s }
+        .dash-section:nth-child(5) { animation-delay:.32s }
+        .xp-bar { transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+        .challenge-card { transition: transform .2s, box-shadow .2s; }
+        .challenge-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.09); }
+        .coupon-card { background: linear-gradient(135deg,#FF6B35 0%,#C44A1A 100%); }
+        .coupon-card.ocean { background: linear-gradient(135deg,#2D8A6E 0%,#0D3B2E 100%); }
+        .buddy-card { transition: transform .2s; }
+        .buddy-card:hover { transform: translateY(-2px); }
+        #qr-modal { display:none; }
+        #qr-modal.open { display:flex; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen">
+
+<!-- ══════════════ NAVBAR ══════════════ -->
+<nav class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-coral-500 flex items-center justify-center shadow-sm">
+                    <i class="fas fa-running text-white text-sm"></i>
+                </div>
+                <span class="font-display font-black text-lg text-gray-900">Move Together</span>
+            </a>
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-ocean-50 rounded-xl border border-ocean-100">
+                    <div id="nav-avatar" class="w-7 h-7 rounded-lg bg-ocean-700 flex items-center justify-center text-white font-black text-xs"></div>
+                    <span id="nav-fullname" class="text-sm font-semibold text-ocean-800"></span>
+                    <span id="nav-level-badge" class="text-xs font-bold text-ocean-600 bg-ocean-100 px-2 py-0.5 rounded-full"></span>
+                </div>
+                <a href="index.html" class="text-sm text-gray-500 hover:text-gray-700 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-home mr-1.5"></i><span class="hidden sm:inline">Home</span>
+                </a>
+                <button id="logout-btn" class="text-sm text-gray-400 hover:text-red-500 font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-1.5"></i><span class="hidden sm:inline">Esci</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- LOADING STATE -->
+    <div id="loading-state" class="flex flex-col items-center justify-center py-24 text-gray-400">
+        <div class="w-12 h-12 border-4 border-coral-200 border-t-coral-500 rounded-full animate-spin mb-4"></div>
+        <p class="text-sm font-medium">Caricamento area personale…</p>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div id="error-state" class="hidden flex flex-col items-center justify-center py-24 text-gray-500">
+        <i class="fas fa-exclamation-triangle text-4xl text-coral-400 mb-4"></i>
+        <p class="font-bold text-lg text-gray-700 mb-2">Errore caricamento</p>
+        <p id="error-msg" class="text-sm text-gray-400 mb-6"></p>
+        <button onclick="location.reload()" class="px-6 py-3 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-colors">
+            Riprova
+        </button>
+    </div>
+
+    <!-- DASHBOARD CONTENT (shown after load) -->
+    <div id="dash-content" class="hidden space-y-8">
+
+        <!-- ── HERO XP ── -->
+        <div class="dash-section bg-gradient-to-br from-gray-900 via-gray-900 to-ocean-900 rounded-3xl p-8 lg:p-10 text-white overflow-hidden relative">
+            <div class="absolute top-0 right-0 w-80 h-80 bg-coral-500/10 rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+            <div class="relative z-10">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                    <div>
+                        <p class="text-gray-400 text-sm font-semibold mb-1 uppercase tracking-wider">Bentornato/a</p>
+                        <h1 id="hero-name" class="font-display font-black text-4xl lg:text-5xl mb-2"></h1>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <span id="hero-level" class="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 text-sm font-bold"></span>
+                            <span id="hero-fascia" class="inline-flex items-center gap-2 bg-coral-500/20 text-coral-300 rounded-full px-4 py-1.5 text-sm font-bold"></span>
+                        </div>
+                    </div>
+                    <div class="lg:text-right">
+                        <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Punti XP totali</p>
+                        <p id="hero-xp" class="font-display font-black text-6xl text-coral-400 leading-none"></p>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <div class="flex justify-between text-xs text-gray-400 mb-2">
+                        <span id="xp-label-current"></span>
+                        <span id="xp-label-next"></span>
+                    </div>
+                    <div class="h-3 bg-white/10 rounded-full overflow-hidden">
+                        <div id="xp-bar" class="xp-bar h-full bg-gradient-to-r from-coral-400 to-coral-600 rounded-full" style="width:0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── STAT CARDS ── -->
+        <div class="dash-section grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-coral-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-bolt text-coral-500"></i>
+                    </div>
+                    <span class="text-2xl font-black text-coral-500" id="stat-xp">–</span>
+                </div>
+                <p class="text-xs text-gray-500 font-semibold">Punti XP</p>
+            </div>
+            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                    </div>
+                    <span class="text-2xl font-black text-green-600" id="stat-sfide">–</span>
+                </div>
+                <p class="text-xs text-gray-500 font-semibold">Sfide completate</p>
+            </div>
+            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-medal text-purple-500"></i>
+                    </div>
+                    <span class="text-2xl font-black text-purple-600" id="stat-badges">–</span>
+                </div>
+                <p class="text-xs text-gray-500 font-semibold">Badge sbloccati</p>
+            </div>
+            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-ticket-alt text-amber-500"></i>
+                    </div>
+                    <span class="text-2xl font-black text-amber-600" id="stat-coupon">–</span>
+                </div>
+                <p class="text-xs text-gray-500 font-semibold">Coupon attivi</p>
+            </div>
+        </div>
+
+        <!-- ── SFIDE ── -->
+        <div class="dash-section bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-gray-50">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="font-display font-bold text-xl text-gray-900">Sfide della Settimana</h2>
+                        <p class="text-sm text-gray-400 mt-0.5">Completa le sfide e guadagna XP</p>
+                    </div>
+                    <div id="challenges-progress-pill" class="hidden sm:flex items-center gap-2 bg-coral-50 text-coral-600 rounded-full px-4 py-2 text-xs font-bold border border-coral-100">
+                        <i class="fas fa-trophy"></i><span id="ch-progress-text"></span>
+                    </div>
+                </div>
+            </div>
+            <div id="challenges-grid" class="p-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+
+        <!-- ── COUPON WALLET ── -->
+        <div class="dash-section bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-gray-50">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="font-display font-bold text-xl text-gray-900">Il Mio Wallet</h2>
+                        <p class="text-sm text-gray-400 mt-0.5">I tuoi coupon e le tue prenotazioni</p>
+                    </div>
+                    <a href="index.html#sfide" class="text-sm text-coral-500 font-bold hover:text-coral-600 flex items-center gap-1">
+                        <i class="fas fa-plus-circle"></i> Ottieni coupon
+                    </a>
+                </div>
+            </div>
+            <div id="coupons-grid" class="p-6">
+                <div id="coupons-empty" class="hidden text-center py-10 text-gray-400">
+                    <i class="fas fa-wallet text-4xl mb-3 block text-gray-200"></i>
+                    <p class="font-medium text-gray-500">Nessun coupon ancora</p>
+                    <p class="text-sm mt-1">Prenota un evento o completa le sfide per ottenere coupon!</p>
+                    <a href="index.html" class="inline-block mt-4 px-5 py-2.5 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-colors">
+                        Esplora gli eventi
+                    </a>
+                </div>
+                <div id="coupons-list" class="grid md:grid-cols-2 gap-4"></div>
+            </div>
+        </div>
+
+        <!-- ── GYM BUDDY ── -->
+        <div class="dash-section bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-gray-50">
+                <h2 class="font-display font-bold text-xl text-gray-900">Gym Buddy Suggeriti</h2>
+                <p class="text-sm text-gray-400 mt-0.5">Compagni di allenamento per te</p>
+            </div>
+            <div id="buddy-grid" class="p-6">
+                <div id="buddy-empty" class="hidden text-center py-10 text-gray-400">
+                    <i class="fas fa-users text-4xl mb-3 block text-gray-200"></i>
+                    <p class="font-medium text-gray-500">Nessun Gym Buddy disponibile al momento</p>
+                    <p class="text-sm mt-1">Invita altri partecipanti a registrarsi su Move Together!</p>
+                </div>
+                <div id="buddy-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- TOAST -->
+<div id="dash-toast" class="fixed bottom-6 right-6 z-[99999] hidden">
+    <div id="dash-toast-inner" class="bg-white rounded-2xl shadow-2xl p-4 flex items-center gap-3 min-w-64 border border-gray-100">
+        <div id="dash-toast-icon" class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"></div>
+        <div><p id="dash-toast-title" class="font-bold text-sm text-gray-900"></p><p id="dash-toast-msg" class="text-xs text-gray-500 mt-0.5"></p></div>
+    </div>
+</div>
+
+<!-- QR MODAL -->
+<div id="qr-modal" class="fixed inset-0 z-[99999] items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeQRModal()"></div>
+    <div class="relative bg-white rounded-3xl shadow-2xl p-8 max-w-xs w-full text-center">
+        <button onclick="closeQRModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+            <i class="fas fa-times"></i>
+        </button>
+        <p class="font-bold text-gray-900 mb-1" id="qr-code-label"></p>
+        <p class="text-xs text-gray-400 mb-4" id="qr-code-desc"></p>
+        <div id="qr-code-container" class="flex justify-center mb-4"></div>
+        <p class="font-mono text-sm font-bold text-gray-700 bg-gray-50 rounded-xl px-4 py-2" id="qr-code-text"></p>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function () {
+    'use strict';
+    const API = '';
+    let userData = null;
+    let challengesData = [];
+    let couponsData = [];
+
+    function getToken() { return localStorage.getItem('mt_token'); }
+    function getUser()  { try { return JSON.parse(localStorage.getItem('mt_user') || 'null'); } catch { return null; } }
+    function clearAuth() { localStorage.removeItem('mt_token'); localStorage.removeItem('mt_user'); }
+
+    function authFetch(url, opts) {
+        opts = opts || {};
+        opts.headers = opts.headers || {};
+        opts.headers['Authorization'] = 'Bearer ' + getToken();
+        return fetch(API + url, opts);
+    }
+
+    function showToast(title, msg, type) {
+        const t = document.getElementById('dash-toast');
+        const icon = document.getElementById('dash-toast-icon');
+        const colors = { success:'bg-green-100 text-green-600', error:'bg-red-100 text-red-600', info:'bg-ocean-100 text-ocean-600', warning:'bg-amber-100 text-amber-600' };
+        const icons  = { success:'fa-check-circle', error:'fa-times-circle', info:'fa-info-circle', warning:'fa-exclamation-triangle' };
+        icon.className = 'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ' + (colors[type] || colors.info);
+        icon.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i>`;
+        document.getElementById('dash-toast-title').textContent = title;
+        document.getElementById('dash-toast-msg').textContent = msg;
+        t.classList.remove('hidden');
+        clearTimeout(t._to);
+        t._to = setTimeout(() => t.classList.add('hidden'), 4000);
+    }
+
+    function showError(msg) {
+        document.getElementById('loading-state').classList.add('hidden');
+        document.getElementById('error-msg').textContent = msg;
+        document.getElementById('error-state').classList.remove('hidden');
+    }
+
+    async function loadDashboard() {
+        if (!getToken()) {
+            window.location.href = '/?login=1';
+            return;
+        }
+
+        try {
+            const [meRes, chRes, cpRes, buRes] = await Promise.all([
+                authFetch('/api/user/me'),
+                authFetch('/api/user/challenges'),
+                authFetch('/api/user/coupons'),
+                authFetch('/api/user/buddy')
+            ]);
+
+            if (meRes.status === 401) { clearAuth(); window.location.href = '/?login=1'; return; }
+            if (!meRes.ok) throw new Error('Errore caricamento profilo');
+
+            userData = await meRes.json();
+            challengesData = chRes.ok ? await chRes.json() : [];
+            couponsData    = cpRes.ok ? await cpRes.json() : [];
+            const buddies  = buRes.ok ? await buRes.json() : [];
+
+            renderHero(userData);
+            renderStats(userData, challengesData, couponsData);
+            renderChallenges(challengesData);
+            renderCoupons(couponsData);
+            renderBuddies(buddies);
+
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('dash-content').classList.remove('hidden');
+            animateXPBar(userData);
+
+        } catch (err) {
+            showError(err.message || 'Errore sconosciuto');
+        }
+    }
+
+    function renderHero(u) {
+        const li = u.livelloInfo || {};
+        document.getElementById('hero-name').textContent = (u.nome || '') + ' ' + (u.cognome || '');
+        document.getElementById('hero-level').innerHTML = `<i class="fas fa-star"></i> Liv.${li.level || 1} – ${li.name || 'Principiante'}`;
+        document.getElementById('hero-fascia').innerHTML = `<i class="fas fa-users"></i> ${u.fasciaEta || ''}`;
+        document.getElementById('hero-xp').textContent = u.punti || 0;
+
+        const avatar = document.getElementById('nav-avatar');
+        const name   = document.getElementById('nav-fullname');
+        const lvl    = document.getElementById('nav-level-badge');
+        if (avatar) avatar.textContent = (u.nome || '?')[0].toUpperCase();
+        if (name)   name.textContent = (u.nome || '') + ' ' + (u.cognome || '');
+        if (lvl)    lvl.textContent  = li.name || '';
+    }
+
+    function animateXPBar(u) {
+        const li = u.livelloInfo || {};
+        const xpMin = li.minXP || 0;
+        const xpNext = u.xpToNext;
+        const punti = u.punti || 0;
+        let pct = 0;
+        let labelNext = 'Livello massimo!';
+
+        document.getElementById('xp-label-current').textContent = `XP: ${punti}`;
+        if (xpNext !== null && xpNext !== undefined) {
+            const nextLevelXP = punti + xpNext;
+            pct = Math.min(100, Math.round(((punti - xpMin) / (nextLevelXP - xpMin)) * 100));
+            labelNext = `Prossimo livello: ${xpNext} XP mancanti`;
+        } else {
+            pct = 100;
+        }
+        document.getElementById('xp-label-next').textContent = labelNext;
+        setTimeout(() => { document.getElementById('xp-bar').style.width = pct + '%'; }, 200);
+    }
+
+    function renderStats(u, challenges, coupons) {
+        document.getElementById('stat-xp').textContent   = u.punti || 0;
+        document.getElementById('stat-sfide').textContent = (u.sfideCompletate || []).length;
+        document.getElementById('stat-badges').textContent = (u.badges || []).length;
+        const attivi = coupons.filter(c => c.stato === 'Attivo').length;
+        document.getElementById('stat-coupon').textContent = attivi;
+    }
+
+    function renderChallenges(challenges) {
+        const grid = document.getElementById('challenges-grid');
+        const pill = document.getElementById('challenges-progress-pill');
+        const ptxt = document.getElementById('ch-progress-text');
+        const done  = challenges.filter(c => c.completata).length;
+
+        if (pill && done > 0) {
+            pill.classList.remove('hidden');
+            ptxt.textContent = `${done}/${challenges.length} completate`;
+        }
+
+        const diffColor = { 'Facile':'text-green-600 bg-green-50 border-green-200', 'Media':'text-amber-600 bg-amber-50 border-amber-200', 'Difficile':'text-red-600 bg-red-50 border-red-200' };
+
+        grid.innerHTML = challenges.map(ch => `
+            <div class="challenge-card rounded-2xl border p-5 ${ch.completata ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200 hover:border-coral-200'}">
+                <div class="flex items-start justify-between mb-3">
+                    <span class="text-3xl">${ch.icon}</span>
+                    <span class="text-xs font-bold px-2 py-1 rounded-full border ${diffColor[ch.difficulty] || 'text-gray-600 bg-gray-100 border-gray-200'}">${ch.difficulty}</span>
+                </div>
+                <h3 class="font-bold text-gray-900 text-sm mb-1">${ch.title}</h3>
+                <p class="text-xs text-gray-500 mb-3 leading-relaxed">${ch.description}</p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-coral-500 bg-coral-50 px-2 py-1 rounded-lg">+${ch.xp} XP</span>
+                        <span class="text-xs font-bold text-purple-500 bg-purple-50 px-2 py-1 rounded-lg">${ch.badge} ${ch.badgeName}</span>
+                    </div>
+                    ${ch.completata
+                        ? `<span class="text-xs font-black text-green-600 flex items-center gap-1"><i class="fas fa-check-circle"></i>Completata</span>`
+                        : `<button onclick="completeChallenge(${ch.id})" class="text-xs font-bold text-white bg-coral-500 hover:bg-coral-600 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1">
+                               <i class="fas fa-plus"></i>Segna
+                           </button>`
+                    }
+                </div>
+            </div>
+        `).join('');
+    }
+
+    window.completeChallenge = async function (id) {
+        const btn = event.target.closest('button');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+        try {
+            const res = await authFetch('/api/user/complete-challenge', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ challengeId: id })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Errore');
+
+            userData = data.user;
+            challengesData = challengesData.map(c => c.id === id ? { ...c, completata: true } : c);
+
+            renderHero(userData);
+            animateXPBar(userData);
+            renderStats(userData, challengesData, couponsData);
+            renderChallenges(challengesData);
+
+            showToast('Sfida completata!', `+${data.xpGuadagnati} XP · Badge: ${data.badgeNome}`, 'success');
+        } catch (err) {
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-plus"></i>Segna'; }
+            showToast('Errore', err.message, 'error');
+        }
+    };
+
+    function renderCoupons(coupons) {
+        const list  = document.getElementById('coupons-list');
+        const empty = document.getElementById('coupons-empty');
+        if (!coupons.length) { empty.classList.remove('hidden'); return; }
+
+        list.innerHTML = coupons.map(cp => {
+            const isOcean = cp.tipo === 'Prenotazione';
+            const statoBadge = cp.stato === 'Attivo'
+                ? '<span class="text-xs font-black text-green-600 bg-green-100 px-2 py-0.5 rounded-full">ATTIVO</span>'
+                : cp.stato === 'Usato'
+                    ? '<span class="text-xs font-black text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">USATO</span>'
+                    : '<span class="text-xs font-black text-red-400 bg-red-100 px-2 py-0.5 rounded-full">SCADUTO</span>';
+
+            return `<div class="coupon-card ${isOcean ? 'ocean' : ''} rounded-2xl p-5 text-white relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-8 translate-x-8 pointer-events-none"></div>
+                <div class="relative">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-white/70 text-xs font-semibold uppercase tracking-wider">${cp.tipo || 'Coupon'}</p>
+                            <p class="font-display font-black text-xl leading-tight">${cp.offerta || ''}</p>
+                        </div>
+                        ${statoBadge}
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-3 mb-4">
+                        <p class="font-mono font-black text-base tracking-widest">${cp.code}</p>
+                        <p class="text-white/60 text-xs mt-0.5">${cp.palestra || ''}</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="text-white/60 text-xs">Scade: ${cp.scadenza || '31/12/2025'}</p>
+                        ${cp.stato === 'Attivo'
+                            ? `<button onclick="openQRModal('${cp.code}','${(cp.offerta||'').replace(/'/g,'')}','${(cp.palestra||'').replace(/'/g,'')}')"
+                                class="text-xs font-bold bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5">
+                                    <i class="fas fa-qrcode"></i>QR Code
+                               </button>`
+                            : ''
+                        }
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    window.openQRModal = function (code, label, desc) {
+        const modal = document.getElementById('qr-modal');
+        const container = document.getElementById('qr-code-container');
+        container.innerHTML = '';
+        document.getElementById('qr-code-label').textContent = label;
+        document.getElementById('qr-code-desc').textContent  = desc;
+        document.getElementById('qr-code-text').textContent  = code;
+        modal.classList.add('open');
+        try {
+            new QRCode(container, { text: code, width: 160, height: 160, colorDark: '#1F6B52', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+        } catch(e) { container.innerHTML = '<p class="text-gray-400 text-sm">QR non disponibile</p>'; }
+    };
+
+    window.closeQRModal = function () {
+        document.getElementById('qr-modal').classList.remove('open');
+    };
+
+    function renderBuddies(buddies) {
+        const list  = document.getElementById('buddy-list');
+        const empty = document.getElementById('buddy-empty');
+        if (!buddies.length) { empty.classList.remove('hidden'); return; }
+
+        const fasciaColor = { 'Giovane (16-20)': 'bg-coral-100 text-coral-700', 'Over 60': 'bg-ocean-100 text-ocean-700', 'Altro': 'bg-gray-100 text-gray-700' };
+
+        list.innerHTML = buddies.map(b => {
+            const initials = ((b.nome || '?')[0] + (b.cognome || '?')[0]).toUpperCase();
+            const isSameGym = b.sameGym;
+            const fc = fasciaColor[b.fasciaEta] || 'bg-gray-100 text-gray-700';
+            return `<div class="buddy-card bg-white border ${isSameGym ? 'border-ocean-200' : 'border-gray-100'} rounded-2xl p-5 relative overflow-hidden shadow-sm">
+                ${isSameGym ? '<div class="absolute top-3 right-3"><span class="text-xs font-black text-ocean-600 bg-ocean-50 px-2 py-0.5 rounded-full border border-ocean-100">Stessa palestra</span></div>' : ''}
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-2xl ${b.fasciaEta === 'Giovane (16-20)' ? 'bg-coral-500' : 'bg-ocean-700'} flex items-center justify-center text-white font-black text-lg flex-shrink-0">
+                        ${initials}
+                    </div>
+                    <div>
+                        <p class="font-bold text-gray-900">${b.nome} ${(b.cognome||'')[0]||''}.</p>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded-full ${fc}">${b.fasciaEta}</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-gray-500">
+                    <i class="fas fa-map-marker-alt text-gray-300"></i>
+                    <span>${b.palestra || 'Palestra non specificata'}</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                    <i class="fas fa-bolt text-gray-300"></i>
+                    <span>${b.livello || 'Principiante'} · ${b.punti || 0} XP</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        clearAuth();
+        window.location.href = '/';
+    });
+
+    // Boot
+    loadDashboard();
+})();
+</script>
+</body>
+</html>

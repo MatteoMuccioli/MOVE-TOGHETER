@@ -59,10 +59,23 @@
                 <a href="#sfide" class="nav-link text-gray-600 hover:text-coral-500 font-medium text-sm">Sfide</a>
             </div>
 
-            <div class="hidden md:block">
-                <button onclick="openModal()" class="px-5 py-2.5 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-all hover:scale-105 shadow-sm">
-                    <i class="fas fa-ticket-alt mr-2"></i>Prenota Ora
-                </button>
+            <div class="hidden md:flex items-center gap-3">
+                <div id="nav-auth-guest" class="flex items-center gap-3">
+                    <button onclick="openAuthModal('login')" class="px-4 py-2 text-gray-600 hover:text-coral-500 font-medium text-sm border border-gray-200 rounded-xl hover:border-coral-300 transition-all">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Accedi
+                    </button>
+                    <button onclick="openModal()" class="px-5 py-2.5 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-all hover:scale-105 shadow-sm">
+                        <i class="fas fa-ticket-alt mr-2"></i>Prenota Ora
+                    </button>
+                </div>
+                <div id="nav-auth-user" class="hidden items-center gap-3">
+                    <a href="dashboard.html" class="flex items-center gap-2 px-4 py-2 bg-ocean-50 text-ocean-700 rounded-xl font-medium text-sm hover:bg-ocean-100 transition-colors border border-ocean-100">
+                        <i class="fas fa-user-circle"></i><span id="nav-username">Area Personale</span>
+                    </a>
+                    <button onclick="authLogout()" class="px-3 py-2 text-gray-400 hover:text-red-500 text-sm transition-colors" title="Esci">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
             </div>
 
             <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100">
@@ -76,7 +89,19 @@
         <a href="#eventi" class="block py-2 text-gray-700 font-medium hover:text-coral-500" onclick="closeMobileMenu()">Eventi</a>
         <a href="#mappa" class="block py-2 text-gray-700 font-medium hover:text-coral-500" onclick="closeMobileMenu()">Sedi</a>
         <a href="#sfide" class="block py-2 text-gray-700 font-medium hover:text-coral-500" onclick="closeMobileMenu()">Sfide</a>
-        <button onclick="openModal();closeMobileMenu()" class="w-full py-3 bg-coral-500 text-white rounded-xl font-bold">Prenota Ora</button>
+        <div id="mob-auth-guest">
+            <button onclick="openAuthModal('login');closeMobileMenu()" class="w-full py-3 border border-gray-200 text-gray-700 rounded-xl font-bold mb-2">
+                <i class="fas fa-sign-in-alt mr-2"></i>Accedi / Registrati
+            </button>
+            <button onclick="openModal();closeMobileMenu()" class="w-full py-3 bg-coral-500 text-white rounded-xl font-bold">Prenota Ora</button>
+        </div>
+        <div id="mob-auth-user" class="hidden space-y-2">
+            <a href="dashboard.html" onclick="closeMobileMenu()" class="block w-full py-3 bg-ocean-700 text-white rounded-xl font-bold text-center">
+                <i class="fas fa-user-circle mr-2"></i>La Mia Area
+            </a>
+            <button onclick="openModal();closeMobileMenu()" class="w-full py-3 bg-coral-500 text-white rounded-xl font-bold">Prenota Ora</button>
+            <button onclick="authLogout();closeMobileMenu()" class="w-full py-2 text-gray-400 text-sm">Esci dall'account</button>
+        </div>
     </div>
 </nav>
 
@@ -367,9 +392,305 @@
     </div>
 </div>
 
+<!-- ══════════════ AUTH MODAL ══════════════ -->
+<div id="auth-modal-overlay" class="fixed inset-0 z-[99998] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+    <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md max-h-[92vh] overflow-y-auto">
+        <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all z-10">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-coral-500 rounded-2xl flex items-center justify-center shadow-md">
+                    <i class="fas fa-user text-white"></i>
+                </div>
+                <div>
+                    <h2 class="font-display font-black text-2xl text-gray-900">Move Together</h2>
+                    <p class="text-sm text-gray-400">Area Riservata ANIF</p>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex bg-gray-100 rounded-2xl p-1 mb-6">
+                <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2.5 rounded-xl font-bold text-sm transition-all bg-white text-gray-900 shadow-sm">
+                    Accedi
+                </button>
+                <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2.5 rounded-xl font-bold text-sm transition-all text-gray-500">
+                    Registrati
+                </button>
+            </div>
+
+            <!-- Login form -->
+            <form id="auth-login-form" onsubmit="doLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
+                    <input type="email" id="login-email" required autocomplete="email"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
+                        placeholder="la-tua@email.it">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+                    <input type="password" id="login-password" required autocomplete="current-password"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
+                        placeholder="••••••••">
+                </div>
+                <div id="login-error" class="hidden text-red-600 text-sm bg-red-50 rounded-xl px-4 py-3 border border-red-100"></div>
+                <button type="submit" id="login-btn"
+                    class="w-full py-3.5 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-all hover:scale-[1.02] shadow-sm flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i>Accedi
+                </button>
+                <p class="text-center text-sm text-gray-400">Non hai un account?
+                    <button type="button" onclick="switchAuthTab('register')" class="text-coral-500 font-bold hover:text-coral-600">Registrati gratis</button>
+                </p>
+            </form>
+
+            <!-- Register form -->
+            <form id="auth-register-form" onsubmit="doRegister(event)" class="space-y-4 hidden">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nome</label>
+                        <input type="text" id="reg-nome" required autocomplete="given-name"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
+                            placeholder="Marco">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Cognome</label>
+                        <input type="text" id="reg-cognome" required autocomplete="family-name"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
+                            placeholder="Rossi">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
+                    <input type="email" id="reg-email" required autocomplete="email"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
+                        placeholder="la-tua@email.it">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+                    <input type="password" id="reg-password" required autocomplete="new-password" minlength="6"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
+                        placeholder="min. 6 caratteri">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Età</label>
+                        <input type="number" id="reg-eta" required min="14" max="100"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
+                            placeholder="25">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Palestra</label>
+                        <select id="reg-gym"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all bg-white">
+                            <option value="">— Seleziona —</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="register-error" class="hidden text-red-600 text-sm bg-red-50 rounded-xl px-4 py-3 border border-red-100"></div>
+                <button type="submit" id="register-btn"
+                    class="w-full py-3.5 bg-coral-500 text-white rounded-xl font-bold text-sm hover:bg-coral-600 transition-all hover:scale-[1.02] shadow-sm flex items-center justify-center gap-2">
+                    <i class="fas fa-user-plus"></i>Crea Account
+                </button>
+                <p class="text-center text-xs text-gray-400">Registrandoti accetti di partecipare al progetto Move Together ANIF Eurowellness.</p>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="app.js"></script>
+<script>
+// ── AUTH SYSTEM ────────────────────────────────────────────────────────────────
+(function () {
+    'use strict';
+
+    const API = '';
+
+    function getToken()  { return localStorage.getItem('mt_token'); }
+    function getUser()   { try { return JSON.parse(localStorage.getItem('mt_user') || 'null'); } catch { return null; } }
+    function saveAuth(token, user) {
+        localStorage.setItem('mt_token', token);
+        localStorage.setItem('mt_user', JSON.stringify(user));
+    }
+    function clearAuth() {
+        localStorage.removeItem('mt_token');
+        localStorage.removeItem('mt_user');
+    }
+
+    function updateNavbar() {
+        const user = getUser();
+        const guestEl   = document.getElementById('nav-auth-guest');
+        const userEl    = document.getElementById('nav-auth-user');
+        const mobGuest  = document.getElementById('mob-auth-guest');
+        const mobUser   = document.getElementById('mob-auth-user');
+        const nameEl    = document.getElementById('nav-username');
+
+        if (user) {
+            guestEl.classList.add('hidden');
+            userEl.classList.remove('hidden');
+            userEl.classList.add('flex');
+            if (mobGuest) mobGuest.classList.add('hidden');
+            if (mobUser)  mobUser.classList.remove('hidden');
+            if (nameEl)   nameEl.textContent = user.nome || 'Area Personale';
+        } else {
+            guestEl.classList.remove('hidden');
+            userEl.classList.add('hidden');
+            userEl.classList.remove('flex');
+            if (mobGuest) mobGuest.classList.remove('hidden');
+            if (mobUser)  mobUser.classList.add('hidden');
+        }
+    }
+
+    window.checkAuthState = function () {
+        updateNavbar();
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('login') === '1' && !getToken()) {
+            openAuthModal('login');
+        }
+    };
+
+    window.openAuthModal = function (tab) {
+        tab = tab || 'login';
+        const overlay = document.getElementById('auth-modal-overlay');
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+        switchAuthTab(tab);
+        populateGymSelect();
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeAuthModal = function () {
+        const overlay = document.getElementById('auth-modal-overlay');
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+        document.body.style.overflow = '';
+    };
+
+    window.switchAuthTab = function (tab) {
+        const loginForm = document.getElementById('auth-login-form');
+        const regForm   = document.getElementById('auth-register-form');
+        const tabLogin  = document.getElementById('tab-login');
+        const tabReg    = document.getElementById('tab-register');
+
+        if (tab === 'login') {
+            loginForm.classList.remove('hidden');
+            regForm.classList.add('hidden');
+            tabLogin.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
+            tabLogin.classList.remove('text-gray-500');
+            tabReg.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
+            tabReg.classList.add('text-gray-500');
+        } else {
+            loginForm.classList.add('hidden');
+            regForm.classList.remove('hidden');
+            tabReg.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
+            tabReg.classList.remove('text-gray-500');
+            tabLogin.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
+            tabLogin.classList.add('text-gray-500');
+        }
+        document.getElementById('login-error').classList.add('hidden');
+        document.getElementById('register-error').classList.add('hidden');
+    };
+
+    function populateGymSelect() {
+        const sel = document.getElementById('reg-gym');
+        if (!sel || sel.options.length > 1) return;
+        if (typeof GYMS !== 'undefined') {
+            GYMS.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g.id;
+                opt.textContent = g.name + ' – ' + g.city;
+                sel.appendChild(opt);
+            });
+        }
+    }
+
+    function setLoading(btn, loading) {
+        if (loading) {
+            btn.disabled = true;
+            btn.dataset.orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Attendere…';
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = btn.dataset.orig || btn.innerHTML;
+        }
+    }
+
+    window.doLogin = async function (e) {
+        e.preventDefault();
+        const btn = document.getElementById('login-btn');
+        const errEl = document.getElementById('login-error');
+        errEl.classList.add('hidden');
+        setLoading(btn, true);
+        try {
+            const res = await fetch(API + '/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email:    document.getElementById('login-email').value.trim(),
+                    password: document.getElementById('login-password').value
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Credenziali non valide');
+            saveAuth(data.token, data.user);
+            updateNavbar();
+            closeAuthModal();
+            if (typeof showToast === 'function') showToast('Bentornato!', 'Accesso effettuato con successo', 'success');
+            setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
+        } catch (err) {
+            errEl.textContent = err.message;
+            errEl.classList.remove('hidden');
+        } finally {
+            setLoading(btn, false);
+        }
+    };
+
+    window.doRegister = async function (e) {
+        e.preventDefault();
+        const btn = document.getElementById('register-btn');
+        const errEl = document.getElementById('register-error');
+        errEl.classList.add('hidden');
+        setLoading(btn, true);
+        try {
+            const res = await fetch(API + '/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nome:     document.getElementById('reg-nome').value.trim(),
+                    cognome:  document.getElementById('reg-cognome').value.trim(),
+                    email:    document.getElementById('reg-email').value.trim(),
+                    password: document.getElementById('reg-password').value,
+                    eta:      parseInt(document.getElementById('reg-eta').value, 10),
+                    gymId:    document.getElementById('reg-gym').value || null
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Errore registrazione');
+            saveAuth(data.token, data.user);
+            updateNavbar();
+            closeAuthModal();
+            if (typeof showToast === 'function') showToast('Benvenuto in Move Together!', 'Account creato con successo 🎉', 'success');
+            setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
+        } catch (err) {
+            errEl.textContent = err.message;
+            errEl.classList.remove('hidden');
+        } finally {
+            setLoading(btn, false);
+        }
+    };
+
+    window.authLogout = function () {
+        clearAuth();
+        updateNavbar();
+        if (typeof showToast === 'function') showToast('Arrivederci!', 'Disconnesso con successo', 'info');
+    };
+
+    // Init after app.js has run
+    window.addEventListener('DOMContentLoaded', () => { setTimeout(checkAuthState, 50); });
+})();
+</script>
 </body>
 </html>

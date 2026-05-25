@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "move-together-github-pages",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["../MOVE TOGETHER - GitHub/serve.js"],
+      "port": 3456
+    },
+    {
+      "name": "move-together-fullstack",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "port": 3000
+    }
+  ]
+}

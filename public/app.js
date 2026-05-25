@@ -68,6 +68,7 @@ let map = null;
    INIT
    ══════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
+    initDarkMode();
     initNavbar();
     initMobileMenu();
     renderEvents();
@@ -78,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initReveal();
     initPing();          // Anti-sleep + status indicator
     fetchLiveCounter();  // Contatore live iscritti hero
+    initCountdown();     // Countdown RiminiWellness
 });
 
 /* ══════════════════════════════════════════════
@@ -643,6 +645,51 @@ function printCoupon() {
     </head><body>${html}</body></html>`);
     w.document.close();
     setTimeout(() => w.print(), 600);
+}
+
+/* ══════════════════════════════════════════════
+   DARK MODE
+   ══════════════════════════════════════════════ */
+function initDarkMode() {
+    const saved = localStorage.getItem('mt_theme');
+    if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+
+    const toggle = document.getElementById('dark-toggle');
+    if (toggle) {
+        toggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('mt_theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('mt_theme', 'dark');
+            }
+        });
+    }
+}
+
+/* ══════════════════════════════════════════════
+   COUNTDOWN  RiminiWellness
+   ══════════════════════════════════════════════ */
+function initCountdown() {
+    const target = new Date('2026-05-28T09:00:00');
+    const els = {
+        d: document.getElementById('cd-days'),
+        h: document.getElementById('cd-hours'),
+        m: document.getElementById('cd-mins'),
+        s: document.getElementById('cd-secs')
+    };
+    if (!els.d) return;
+    const tick = () => {
+        const diff = Math.max(0, target - Date.now());
+        els.d.textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+        els.h.textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+        els.m.textContent = String(Math.floor((diff % 3600000)  / 60000)).padStart(2, '0');
+        els.s.textContent = String(Math.floor((diff % 60000)    / 1000)).padStart(2, '0');
+    };
+    tick();
+    setInterval(tick, 1000);
 }
 
 /* ── Share ── */

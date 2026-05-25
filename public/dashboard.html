@@ -298,8 +298,11 @@
                 authFetch('/api/user/buddy')
             ]);
 
-            if (meRes.status === 401) { clearAuth(); window.location.href = '/?login=1'; return; }
-            if (!meRes.ok) throw new Error('Errore caricamento profilo');
+            if (meRes.status === 401 || meRes.status === 404) { clearAuth(); window.location.href = '/?login=1'; return; }
+            if (!meRes.ok) {
+                const ed = await meRes.json().catch(() => ({}));
+                throw new Error(ed.error || 'Errore caricamento profilo');
+            }
 
             userData = await meRes.json();
             const chRaw = chRes.ok ? await chRes.json() : {};

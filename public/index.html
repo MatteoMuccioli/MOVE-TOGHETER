@@ -52,11 +52,12 @@
                 </div>
             </a>
 
-            <div class="hidden md:flex items-center gap-8">
+            <div class="hidden md:flex items-center gap-6">
                 <a href="#progetto" class="nav-link text-gray-600 hover:text-coral-500 font-medium text-sm">Il Progetto</a>
                 <a href="#eventi" class="nav-link text-gray-600 hover:text-coral-500 font-medium text-sm">Eventi</a>
                 <a href="#mappa" class="nav-link text-gray-600 hover:text-coral-500 font-medium text-sm">Sedi</a>
                 <a href="#sfide" class="nav-link text-gray-600 hover:text-coral-500 font-medium text-sm">Sfide</a>
+                <button id="dark-toggle" title="Modalità scura" aria-label="Cambia tema"></button>
             </div>
 
             <div class="hidden md:flex items-center gap-3">
@@ -89,6 +90,12 @@
         <a href="#eventi" class="block py-2 text-gray-700 font-medium hover:text-coral-500" onclick="closeMobileMenu()">Eventi</a>
         <a href="#mappa" class="block py-2 text-gray-700 font-medium hover:text-coral-500" onclick="closeMobileMenu()">Sedi</a>
         <a href="#sfide" class="block py-2 text-gray-700 font-medium hover:text-coral-500" onclick="closeMobileMenu()">Sfide</a>
+        <div class="flex items-center justify-between py-2">
+            <span class="text-gray-700 font-medium text-sm">Modalità scura</span>
+            <button id="dark-toggle-mobile" onclick="document.getElementById('dark-toggle').click()" class="w-10 h-[22px] rounded-full relative transition-colors" style="background:var(--border)">
+                <span class="absolute top-[3px] left-[3px] w-4 h-4 rounded-full bg-white shadow transition-transform duration-300"></span>
+            </button>
+        </div>
         <div id="mob-auth-guest">
             <button onclick="openAuthModal('login');closeMobileMenu()" class="w-full py-3 border border-gray-200 text-gray-700 rounded-xl font-bold mb-2">
                 <i class="fas fa-sign-in-alt mr-2"></i>Accedi / Registrati
@@ -125,7 +132,7 @@
                     Uniamo giovani dai <strong class="text-coral-500">16 ai 20 anni</strong> e gli <strong class="text-ocean-700">Over 60</strong>
                     attraverso il movimento. Più salute, più connessione, meno solitudine.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                <div class="flex flex-col sm:flex-row gap-4 mb-8">
                     <button onclick="openModal('giovani')" class="group flex items-center justify-center gap-3 px-7 py-4 bg-coral-500 text-white rounded-2xl font-bold text-base hover:bg-coral-600 transition-all hover:scale-105 shadow-coral-btn">
                         <i class="fas fa-bolt text-yellow-300"></i>Sono un Giovane (16-20)
                         <i class="fas fa-arrow-right text-sm opacity-60 group-hover:translate-x-1 transition-transform"></i>
@@ -135,6 +142,32 @@
                         <i class="fas fa-arrow-right text-sm opacity-60 group-hover:translate-x-1 transition-transform"></i>
                     </button>
                 </div>
+
+                <!-- Countdown RiminiWellness -->
+                <div class="mb-10">
+                    <p class="text-xs font-bold text-coral-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <i class="fas fa-clock"></i>RiminiWellness 2026 · 28 Maggio
+                    </p>
+                    <div class="flex gap-3">
+                        <div class="countdown-box">
+                            <span id="cd-days" class="countdown-num">00</span>
+                            <span class="countdown-label">Giorni</span>
+                        </div>
+                        <div class="countdown-box">
+                            <span id="cd-hours" class="countdown-num">00</span>
+                            <span class="countdown-label">Ore</span>
+                        </div>
+                        <div class="countdown-box">
+                            <span id="cd-mins" class="countdown-num">00</span>
+                            <span class="countdown-label">Minuti</span>
+                        </div>
+                        <div class="countdown-box">
+                            <span id="cd-secs" class="countdown-num">00</span>
+                            <span class="countdown-label">Secondi</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex flex-wrap gap-8">
                     <div><span class="font-display font-black text-3xl text-coral-500">200+</span><p class="text-sm text-gray-500 mt-0.5">Centri Aderenti</p></div>
                     <div><span class="font-display font-black text-3xl text-ocean-700">50+</span><p class="text-sm text-gray-500 mt-0.5">Città in Italia</p></div>

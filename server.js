@@ -53,14 +53,14 @@ function genCode() {
 function classifyAge(age) {
     age = parseInt(age);
     if (age >= 16 && age <= 20) return 'Giovane (16-20)';
-    if (age >= 60)               return 'Over 60';
+    if (age >= 65)               return 'Over 65';
     return 'Altro';
 }
 
 const CHALLENGES = [
-    { id:1, title:'10.000 Passi Condivisi',          xp:150, badge:'🚶', badgeName:'Camminatore',  difficulty:'Facile',    diffColor:'#10B981', icon:'fa-walking',    description:'Cammina 10.000 passi insieme a un Over 60. Documenta il percorso con una foto.' },
-    { id:2, title:"Insegna un'App Tech a un Senior", xp:200, badge:'📱', badgeName:'Tech Mentor',  difficulty:'Media',     diffColor:'#F59E0B', icon:'fa-mobile-alt', description:"Mostra a un Over 60 come usare un fitness tracker o l'app Move Together." },
-    { id:3, title:'Sessione Stretching Condivisa',   xp:120, badge:'🧘', badgeName:'Zen Master',   difficulty:'Facile',    diffColor:'#10B981', icon:'fa-spa',        description:'30 minuti di stretching o yoga con un Over 60 del tuo centro.' },
+    { id:1, title:'10.000 Passi Condivisi',          xp:150, badge:'🚶', badgeName:'Camminatore',  difficulty:'Facile',    diffColor:'#10B981', icon:'fa-walking',    description:'Cammina 10.000 passi insieme a un Over 65. Documenta il percorso con una foto.' },
+    { id:2, title:"Insegna un'App Tech a un Senior", xp:200, badge:'📱', badgeName:'Tech Mentor',  difficulty:'Media',     diffColor:'#F59E0B', icon:'fa-mobile-alt', description:"Mostra a un Over 65 come usare un fitness tracker o l'app Move Together." },
+    { id:3, title:'Sessione Stretching Condivisa',   xp:120, badge:'🧘', badgeName:'Zen Master',   difficulty:'Facile',    diffColor:'#10B981', icon:'fa-spa',        description:'30 minuti di stretching o yoga con un Over 65 del tuo centro.' },
     { id:4, title:'Sfida dei 30 Giorni',             xp:500, badge:'🔥', badgeName:'Fuoco Sacro',  difficulty:'Difficile', diffColor:'#EF4444', icon:'fa-fire',       description:'30 giorni consecutivi di allenamento, almeno 2 sessioni in coppia a settimana.' },
     { id:5, title:'Ricetta Sana Intergenerazionale', xp:100, badge:'🍎', badgeName:'Chef Salute',  difficulty:'Facile',    diffColor:'#10B981', icon:'fa-utensils',   description:'Prepara un pasto salutare con un Senior e condividi la ricetta nella community.' },
     { id:6, title:'Porta un Amico al Move Together', xp:250, badge:'🤝', badgeName:'Ambasciatore', difficulty:'Media',     diffColor:'#F59E0B', icon:'fa-user-plus',  description:"Invita un amico all'Open Day. Se si iscrive, entrambi ricevete un mese gratis." }
@@ -242,7 +242,7 @@ app.get('/api/user/buddy', authMiddleware, (req, res) => {
     const me = utenti.find(u => u.id === req.user.id);
     if (!me) return res.status(404).json({ error: 'Utente non trovato.' });
 
-    const targetFascia = me.fasciaEta === 'Giovane (16-20)' ? 'Over 60' : 'Giovane (16-20)';
+    const targetFascia = me.fasciaEta === 'Giovane (16-20)' ? 'Over 65' : 'Giovane (16-20)';
     const buddies = utenti
         .filter(u => u.id !== me.id && u.fasciaEta === targetFascia)
         .sort((a, b) => (b.gymId === me.gymId ? 1 : 0) - (a.gymId === me.gymId ? 1 : 0))
@@ -311,8 +311,8 @@ app.get('/api/admin/stats', adminMiddleware, (req, res) => {
     const coupons = readJSON(COUPON_F), utenti = readJSON(UTENTI_F);
 
     const giovani = coupons.filter(c => c.ageGroup === 'Giovane (16-20)').length;
-    const senior  = coupons.filter(c => c.ageGroup === 'Over 60').length;
-    const altri   = coupons.filter(c => !['Giovane (16-20)', 'Over 60'].includes(c.ageGroup)).length;
+    const senior  = coupons.filter(c => c.ageGroup === 'Over 65').length;
+    const altri   = coupons.filter(c => !['Giovane (16-20)', 'Over 65'].includes(c.ageGroup)).length;
     const interGeno = coupons.filter(c => /(intergener|pilates)/i.test(c.offerta || '')).length;
 
     const byOffer = {};
@@ -328,7 +328,7 @@ app.get('/api/admin/stats', adminMiddleware, (req, res) => {
 
     const totalUsers  = utenti.length;
     const userGiovani = utenti.filter(u => u.fasciaEta === 'Giovane (16-20)').length;
-    const userSenior  = utenti.filter(u => u.fasciaEta === 'Over 60').length;
+    const userSenior  = utenti.filter(u => u.fasciaEta === 'Over 65').length;
 
     const challengeStats = CHALLENGES.map(ch => ({
         id: ch.id, title: ch.title, badge: ch.badge, xp: ch.xp,
@@ -365,7 +365,7 @@ app.get('/api/admin/export', adminMiddleware, (req, res) => {
    ══════════════════════════════════════════════ */
 
 function buildWelcomeEmail(user) {
-    const c = user.fasciaEta === 'Over 60' ? '#1F6B52' : '#FF6B35';
+    const c = user.fasciaEta === 'Over 65' ? '#1F6B52' : '#FF6B35';
     return `<div style="font-family:'Inter',sans-serif;max-width:560px;margin:0 auto;">
         <div style="background:linear-gradient(135deg,#FF6B35,#FF8A5B);padding:32px;text-align:center;color:white;border-radius:16px 16px 0 0;">
             <div style="font-size:2.5rem;">🏃</div>
@@ -383,7 +383,7 @@ function buildWelcomeEmail(user) {
 }
 
 function buildUserEmail(data) {
-    const c = data.ageGroup === 'Over 60' ? '#1F6B52' : '#FF6B35';
+    const c = data.ageGroup === 'Over 65' ? '#1F6B52' : '#FF6B35';
     return `<div style="font-family:'Inter',sans-serif;max-width:560px;margin:0 auto;">
         <div style="background:linear-gradient(135deg,#FF6B35,#FF8A5B);padding:28px;text-align:center;color:white;border-radius:16px 16px 0 0;">
             <h1 style="font-weight:900;font-size:1.5rem;margin:0 0 6px;">Il tuo Coupon Move Together 🎉</h1>

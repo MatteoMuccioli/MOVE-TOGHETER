@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Move Together – ANIF Eurowellness | RiminiWellness 2026</title>
-    <meta name="description" content="Move Together: il progetto ANIF Eurowellness che unisce giovani (16-20) e Over 60 attraverso il movimento. RiminiWellness 2026.">
+    <meta name="description" content="Move Together: il progetto ANIF Eurowellness che unisce giovani (16-20) e Over 65 attraverso il movimento. RiminiWellness 2026.">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -171,7 +171,7 @@
                 <div class="flex items-center gap-3 mb-6 animate-fade-up flex-wrap">
                     <span class="badge-youth"><i class="fas fa-bolt text-xs"></i>16–20 anni</span>
                     <span style="color:var(--text-faint);font-size:.75rem;">×</span>
-                    <span class="badge-senior"><i class="fas fa-heart text-xs"></i>Over 60</span>
+                    <span class="badge-senior"><i class="fas fa-heart text-xs"></i>Over 65</span>
                 </div>
 
                 <h1 class="font-display font-black leading-none mb-5 animate-fade-up-d1" style="font-size:clamp(3.2rem,8vw,5.5rem);">
@@ -180,7 +180,7 @@
                 </h1>
                 <p class="font-semibold mb-2 animate-fade-up-d2" style="font-size:1.25rem;color:var(--text);">Il benessere non ha età.</p>
                 <p class="leading-relaxed mb-10 max-w-xl animate-fade-up-d2" style="font-size:1.05rem;color:var(--text-muted);">
-                    Uniamo giovani dai <strong style="color:var(--coral);">16 ai 20 anni</strong> e gli <strong style="color:var(--ocean-deep);">Over 60</strong>
+                    Uniamo giovani dai <strong style="color:var(--coral);">16 ai 20 anni</strong> e gli <strong style="color:var(--ocean-deep);">Over 65</strong>
                     attraverso il movimento. Più salute, più connessione, meno solitudine.
                 </p>
 
@@ -192,21 +192,25 @@
                     </button>
                     <button onclick="openModal('senior')" class="group flex items-center justify-center gap-3 px-7 py-4 text-white rounded-2xl font-bold text-base transition-all shadow-ocean-btn" style="background:linear-gradient(135deg,#004B49,#1F6B52);">
                         <i class="fas fa-heart text-green-300"></i>
-                        <span>Sono un Over 60</span>
+                        <span>Sono un Over 65</span>
                         <i class="fas fa-arrow-right text-sm opacity-60 group-hover:translate-x-1 transition-transform"></i>
                     </button>
                 </div>
 
-                <!-- Countdown -->
+                <!-- Live Event Banner -->
                 <div class="mb-10 animate-fade-up-d3">
                     <p class="text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2" style="color:var(--coral);">
-                        <i class="fas fa-satellite-dish animate-pulse"></i>RiminiWellness 2026 · 28 Maggio
+                        <i class="fas fa-satellite-dish animate-pulse"></i>RiminiWellness 2026 · In corso ora
                     </p>
-                    <div class="flex gap-3">
-                        <div class="countdown-box"><span id="cd-days"  class="countdown-num">00</span><span class="countdown-label">Giorni</span></div>
-                        <div class="countdown-box"><span id="cd-hours" class="countdown-num">00</span><span class="countdown-label">Ore</span></div>
-                        <div class="countdown-box"><span id="cd-mins"  class="countdown-num">00</span><span class="countdown-label">Minuti</span></div>
-                        <div class="countdown-box"><span id="cd-secs"  class="countdown-num">00</span><span class="countdown-label">Secondi</span></div>
+                    <div class="flex items-center gap-3 p-4 rounded-2xl flex-wrap" style="background:rgba(255,87,34,.08);border:1px solid rgba(255,87,34,.2);">
+                        <span class="flex-shrink-0 text-xs font-black px-3 py-1.5 rounded-full" style="background:#FF5722;color:white;animation:pulse 2s infinite;">● LIVE</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-bold text-sm" style="color:var(--text);">Siamo a RiminiWellness 2026!</p>
+                            <p class="text-xs" style="color:var(--text-muted);">Vieni a trovarci · Padiglione ANIF Eurowellness</p>
+                        </div>
+                        <button onclick="openModal()" class="flex-shrink-0 px-4 py-2 text-white rounded-xl font-bold text-xs transition-all hover:scale-105 shadow-coral-btn" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
+                            Partecipa
+                        </button>
                     </div>
                 </div>
 
@@ -343,9 +347,9 @@
                 <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shadow-ocean-btn" style="background:linear-gradient(135deg,#004B49,#1F6B52);">
                     <i class="fas fa-heart text-white text-xl"></i>
                 </div>
-                <div class="chip mb-4" style="background:rgba(0,75,73,.10);color:var(--ocean-deep);">Senior · Over 60</div>
+                <div class="chip mb-4" style="background:rgba(0,75,73,.10);color:var(--ocean-deep);">Senior · Over 65</div>
                 <h3 class="font-display font-bold text-xl mb-3" style="color:var(--text);">Longevità Attiva</h3>
-                <p class="leading-relaxed text-sm mb-5" style="color:var(--text-muted);">Per gli Over 60, muoversi con i giovani significa ritrovare vitalità, combattere la sedentarietà e sentirsi parte di una comunità che li valorizza.</p>
+                <p class="leading-relaxed text-sm mb-5" style="color:var(--text-muted);">Per gli Over 65, muoversi con i giovani significa ritrovare vitalità, combattere la sedentarietà e sentirsi parte di una comunità che li valorizza.</p>
                 <ul class="space-y-2 text-sm" style="color:var(--text-muted);">
                     <li class="flex items-center gap-2"><i class="fas fa-check text-xs" style="color:var(--ocean-deep);"></i>Percorsi personalizzati</li>
                     <li class="flex items-center gap-2"><i class="fas fa-check text-xs" style="color:var(--ocean-deep);"></i>Ginnastica dolce e posturale</li>
@@ -360,13 +364,13 @@
                 <div>
                     <span class="text-sm font-bold uppercase tracking-widest" style="color:var(--coral);">La Scienza lo Conferma</span>
                     <h3 class="font-display font-black mt-3 mb-5 leading-tight" style="font-size:clamp(1.6rem,4vw,2.4rem);color:white;">
-                        L'attività fisica condivisa riduce la solitudine degli Over 60 del <span style="color:var(--coral);">40%</span>
+                        L'attività fisica condivisa riduce la solitudine degli Over 65 del <span style="color:var(--coral);">40%</span>
                     </h3>
                     <p class="leading-relaxed mb-6 text-sm" style="color:rgba(255,255,255,.6);">Studi OMS e ricerche universitarie dimostrano che programmi di attività fisica intergenerazionale migliorano mobilità, qualità della vita e salute mentale per entrambe le fasce d'età.</p>
                     <a href="https://anifeurowellness.it/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 font-bold hover:opacity-80 transition-opacity text-sm" style="color:var(--coral);">Scopri le iniziative ANIF <i class="fas fa-external-link-alt text-xs"></i></a>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="stat-dark-box"><span class="font-display font-black text-4xl" style="color:var(--coral);">-40%</span><p class="text-xs mt-2" style="color:rgba(255,255,255,.5);">Solitudine negli Over 60</p></div>
+                    <div class="stat-dark-box"><span class="font-display font-black text-4xl" style="color:var(--coral);">-40%</span><p class="text-xs mt-2" style="color:rgba(255,255,255,.5);">Solitudine negli Over 65</p></div>
                     <div class="stat-dark-box"><span class="font-display font-black text-4xl" style="color:#93C5FD;">+28%</span><p class="text-xs mt-2" style="color:rgba(255,255,255,.5);">Costanza nei giovani</p></div>
                     <div class="stat-dark-box"><span class="font-display font-black text-4xl" style="color:#FCD34D;">3x</span><p class="text-xs mt-2" style="color:rgba(255,255,255,.5);">Più motivazione in coppia</p></div>
                     <div class="stat-dark-box"><span class="font-display font-black text-4xl" style="color:#6EE7B7;">85%</span><p class="text-xs mt-2" style="color:rgba(255,255,255,.5);">Soddisfazione partecipanti</p></div>
@@ -389,7 +393,7 @@
         <div class="flex flex-wrap justify-center gap-3 mb-12 reveal">
             <button class="filter-btn active" data-filter="tutti"              onclick="filterEvents('tutti')"><i class="fas fa-globe mr-2"></i>Tutti</button>
             <button class="filter-btn" data-filter="giovani"                  onclick="filterEvents('giovani')"><i class="fas fa-bolt mr-2"></i>Per Giovani</button>
-            <button class="filter-btn" data-filter="senior"                   onclick="filterEvents('senior')"><i class="fas fa-heart mr-2"></i>Per Over 60</button>
+            <button class="filter-btn" data-filter="senior"                   onclick="filterEvents('senior')"><i class="fas fa-heart mr-2"></i>Per Over 65</button>
             <button class="filter-btn" data-filter="intergenerazionale"       onclick="filterEvents('intergenerazionale')"><i class="fas fa-infinity mr-2"></i>Intergenerazionali</button>
         </div>
         <div id="events-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>

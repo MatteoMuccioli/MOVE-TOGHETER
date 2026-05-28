@@ -310,10 +310,10 @@
         <div class="kpi-card" style="--accent-color:#4ADE80;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
                 <div style="width:44px;height:44px;background:rgba(74,222,128,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:1px solid rgba(74,222,128,.15);">❤️</div>
-                <span class="badge-pill" style="background:rgba(74,222,128,.1);color:#4ADE80;border:1px solid rgba(74,222,128,.2);">OVER 60</span>
+                <span class="badge-pill" style="background:rgba(74,222,128,.1);color:#4ADE80;border:1px solid rgba(74,222,128,.2);">OVER 65</span>
             </div>
             <p style="font-family:'Poppins',sans-serif;font-size:2.8rem;font-weight:900;color:#4ADE80;margin:0 0 4px;line-height:1;text-shadow:0 0 20px rgba(74,222,128,.3);" id="kpi-senior">–</p>
-            <p style="font-size:13px;color:rgba(255,255,255,.35);margin:0;">Senior (Over 60)</p>
+            <p style="font-size:13px;color:rgba(255,255,255,.35);margin:0;">Senior (Over 65)</p>
         </div>
         <div class="kpi-card" style="--accent-color:#A78BFA;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
@@ -352,7 +352,7 @@
                 <span class="badge-pill" style="background:rgba(74,222,128,.1);color:#4ADE80;border:1px solid rgba(74,222,128,.2);">SENIOR</span>
             </div>
             <p style="font-family:'Poppins',sans-serif;font-size:2.8rem;font-weight:900;color:#4ADE80;margin:0 0 4px;line-height:1;text-shadow:0 0 20px rgba(74,222,128,.25);" id="kpi-user-senior">–</p>
-            <p style="font-size:13px;color:rgba(255,255,255,.35);margin:0;">Utenti Senior (Over 60)</p>
+            <p style="font-size:13px;color:rgba(255,255,255,.35);margin:0;">Utenti Senior (Over 65)</p>
         </div>
     </div>
 
@@ -590,7 +590,7 @@ function updateChartTrend(byDay) {
 
 /* ══════════ CHART: FASCE ══════════ */
 function updateChartFasce(data) {
-    const labels = ['Giovani (16-20)', 'Senior (Over 60)', 'Altro'];
+    const labels = ['Giovani (16-20)', 'Senior (Over 65)', 'Altro'];
     const values = [data.giovani, data.senior, data.altri];
     const colors = ['#FF5722', '#4ADE80', '#A78BFA'];
     const ctx    = document.getElementById('chart-fasce').getContext('2d');
@@ -682,7 +682,7 @@ function updateUsersTable(users) {
     empty.style.display = 'none';
     const fasciaColors = {
         'Giovane (16-20)': { bg:'rgba(234,88,12,.12)', color:'#FB923C' },
-        'Over 60':         { bg:'rgba(74,222,128,.1)',  color:'#4ADE80' },
+        'Over 65':         { bg:'rgba(74,222,128,.1)',  color:'#4ADE80' },
         'Altro':           { bg:'rgba(167,139,250,.1)', color:'#A78BFA' }
     };
     tbody.innerHTML = users.map(u => {
@@ -710,7 +710,7 @@ function updateTable(bookings) {
     empty.style.display = 'none';
     const groupColors = {
         'Giovane (16-20)': { bg:'rgba(234,88,12,.12)', color:'#FB923C' },
-        'Over 60':         { bg:'rgba(74,222,128,.1)',  color:'#4ADE80' },
+        'Over 65':         { bg:'rgba(74,222,128,.1)',  color:'#4ADE80' },
         'Altro':           { bg:'rgba(167,139,250,.1)', color:'#A78BFA' }
     };
     tbody.innerHTML = bookings.map(b => {

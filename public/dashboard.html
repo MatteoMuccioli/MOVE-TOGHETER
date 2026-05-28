@@ -24,15 +24,18 @@
         :root {
             --coral: #FF5722;
             --ocean-deep: #004B49;
-            --bg-dark: #090C14;
+            --bg-dark: #0F1219;
         }
+        * { box-sizing: border-box; }
         body {
             background: var(--bg-dark);
             background-image:
-                radial-gradient(ellipse 80% 60% at 110% -10%, rgba(255,87,34,.07) 0%, transparent 55%),
-                radial-gradient(ellipse 60% 60% at -10% 110%, rgba(0,75,73,.07) 0%, transparent 55%);
+                radial-gradient(ellipse 80% 60% at 110% -10%, rgba(255,87,34,.16) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 60% at -10% 110%, rgba(0,75,73,.16) 0%, transparent 55%);
             background-attachment: fixed;
+            overflow-x: hidden;
         }
+
         /* ── Section entrance ── */
         .dash-section { animation: fadeUp .5s ease both; }
         @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
@@ -43,21 +46,21 @@
 
         /* ── Glass panels ── */
         .glass-dark {
-            background: rgba(255,255,255,.04);
+            background: rgba(255,255,255,.09);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.13);
         }
         .glass-section {
-            background: rgba(255,255,255,.04);
+            background: rgba(255,255,255,.07);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.11);
             border-radius: 24px;
         }
 
         /* ── XP Circular Ring ── */
-        .xp-ring-track { fill: none; stroke: rgba(255,255,255,.08); stroke-width: 8; }
+        .xp-ring-track { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 8; }
         .xp-ring-fill  {
             fill: none;
             stroke-width: 8;
@@ -70,13 +73,15 @@
 
         /* ── Stat cards ── */
         .dash-stat-card {
-            background: rgba(255,255,255,.05);
-            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255,255,255,.09);
+            border: 1px solid rgba(255,255,255,.12);
             border-radius: 20px;
-            padding: 20px;
+            padding: 14px;
             transition: transform .25s, box-shadow .25s;
         }
-        .dash-stat-card:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,.4); }
+        @media (min-width: 480px) { .dash-stat-card { padding: 18px; } }
+        @media (min-width: 640px) { .dash-stat-card { padding: 20px; } }
+        .dash-stat-card:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,.35); }
 
         /* ── Apple Wallet 3D Coupon ── */
         .wallet-scene { perspective: 900px; }
@@ -94,7 +99,6 @@
         }
         .wallet-card.coral-card { background: linear-gradient(135deg,#FF5722 0%,#FF8A5B 50%,#C44A1A 100%); }
         .wallet-card.ocean-card { background: linear-gradient(135deg,#004B49 0%,#1F6B52 50%,#0D3B2E 100%); }
-        /* shine overlay */
         .wallet-card::before {
             content: '';
             position: absolute;
@@ -103,39 +107,44 @@
             pointer-events: none;
             z-index: 1;
         }
-        .wallet-card-inner { position: relative; z-index: 2; padding: 22px; }
+        .wallet-card-inner { position: relative; z-index: 2; padding: 16px; }
+        @media (min-width: 480px) { .wallet-card-inner { padding: 22px; } }
 
-        /* ── Challenge cards dark ── */
+        /* ── Challenge cards ── */
         .ch-card {
-            background: rgba(255,255,255,.04);
-            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.11);
             border-radius: 18px;
-            padding: 20px;
+            padding: 16px;
             transition: transform .2s, border-color .2s, box-shadow .2s;
+            display: flex;
+            flex-direction: column;
         }
-        .ch-card:hover { transform: translateY(-3px); border-color: rgba(255,87,34,.35); box-shadow: 0 12px 32px rgba(0,0,0,.4); }
-        .ch-card.done { border-color: rgba(16,185,129,.25); background: rgba(16,185,129,.04); }
+        @media (min-width: 640px) { .ch-card { padding: 20px; } }
+        .ch-card:hover { transform: translateY(-3px); border-color: rgba(255,87,34,.4); box-shadow: 0 12px 32px rgba(0,0,0,.35); }
+        .ch-card.done { border-color: rgba(16,185,129,.3); background: rgba(16,185,129,.06); }
 
         /* ── Buddy cards ── */
         .buddy-card {
-            background: rgba(255,255,255,.04);
-            border: 1px solid rgba(255,255,255,.07);
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.1);
             border-radius: 18px;
-            padding: 20px;
+            padding: 16px;
             transition: transform .2s, box-shadow .2s;
         }
-        .buddy-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.35); }
-        .buddy-card.same-gym { border-color: rgba(31,107,82,.35); }
+        @media (min-width: 640px) { .buddy-card { padding: 20px; } }
+        .buddy-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.3); }
+        .buddy-card.same-gym { border-color: rgba(31,107,82,.4); }
 
         /* ── Navbar ── */
         .dash-nav {
-            background: rgba(9,12,20,.85);
+            background: rgba(14,18,25,.92);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,.07);
+            border-bottom: 1px solid rgba(255,255,255,.1);
         }
 
-        /* ── Toast ── */
+        /* ── QR Modal ── */
         #qr-modal { display:none; }
         #qr-modal.open { display:flex; }
 
@@ -143,7 +152,7 @@
         .xp-neon {
             font-family: 'Poppins', sans-serif;
             font-weight: 900;
-            font-size: 3.5rem;
+            font-size: 3rem;
             line-height: 1;
             background: linear-gradient(135deg, #FF5722, #FF8A5B);
             -webkit-background-clip: text;
@@ -151,10 +160,12 @@
             background-clip: text;
             filter: drop-shadow(0 0 18px rgba(255,87,34,.5));
         }
+        @media (min-width: 1024px) { .xp-neon { font-size: 3.5rem; } }
 
         /* ── Section header accent ── */
         .section-accent {
             display: inline-block;
+            flex-shrink: 0;
             width: 3px;
             height: 20px;
             background: linear-gradient(to bottom, #FF5722, #FF8A5B);
@@ -162,6 +173,22 @@
             margin-right: 10px;
             vertical-align: middle;
         }
+
+        /* ── Responsive section padding ── */
+        .sec-header { padding: 16px 16px; border-bottom: 1px solid rgba(255,255,255,.07); }
+        @media (min-width: 640px) { .sec-header { padding: 20px 24px; } }
+        .sec-body { padding: 16px; }
+        @media (min-width: 640px) { .sec-body { padding: 24px; } }
+
+        /* ── Responsive hero XP panel ── */
+        .hero-xp-panel { padding: 24px 20px; }
+        @media (min-width: 1024px) { .hero-xp-panel { padding: 40px; } }
+
+        /* ── Text overflow safety ── */
+        .text-safe { overflow-wrap: break-word; word-break: break-word; min-width: 0; }
+
+        /* ── Challenges progress pill ── */
+        #challenges-progress-pill { white-space: nowrap; }
     </style>
 </head>
 <body class="font-sans min-h-screen text-gray-100">
@@ -194,7 +221,7 @@
 </nav>
 
 <!-- ══════════════ MAIN ══════════════ -->
-<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+<main class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-4 sm:space-y-6">
 
     <!-- LOADING STATE -->
     <div id="loading-state" class="flex flex-col items-center justify-center py-32">
@@ -221,13 +248,13 @@
             <div class="absolute top-0 right-0 w-96 h-96 pointer-events-none" style="background:radial-gradient(circle,rgba(255,87,34,.1) 0%,transparent 65%);transform:translate(30%,-30%);"></div>
             <div class="absolute bottom-0 left-0 w-64 h-64 pointer-events-none" style="background:radial-gradient(circle,rgba(0,75,73,.12) 0%,transparent 65%);transform:translate(-30%,30%);"></div>
 
-            <div class="relative z-10 p-8 lg:p-10">
-                <div class="flex flex-col lg:flex-row lg:items-center gap-8">
+            <div class="relative z-10 p-5 sm:p-8 lg:p-10">
+                <div class="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-8">
 
                     <!-- Left: info -->
-                    <div class="flex-1">
+                    <div class="flex-1 min-w-0">
                         <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color:rgba(255,255,255,.35);">Bentornato/a</p>
-                        <h1 id="hero-name" class="font-display font-black text-4xl lg:text-5xl text-white mb-3"></h1>
+                        <h1 id="hero-name" class="font-display font-black text-3xl sm:text-4xl lg:text-5xl text-white mb-3 text-safe"></h1>
                         <div class="flex items-center gap-3 flex-wrap">
                             <span id="hero-level" class="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.1);"></span>
                             <span id="hero-fascia" class="inline-flex items-center gap-2 text-sm font-bold px-4 py-1.5 rounded-full" style="background:rgba(255,87,34,.15);color:#FF8A5B;border:1px solid rgba(255,87,34,.25);"></span>
@@ -275,81 +302,81 @@
         </div>
 
         <!-- ── STAT CARDS ── -->
-        <div class="dash-section grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="dash-section grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div class="dash-stat-card">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,87,34,.15);">
-                        <i class="fas fa-bolt" style="color:#FF5722;"></i>
+                <div class="flex items-center justify-between mb-2 sm:mb-3">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,87,34,.15);">
+                        <i class="fas fa-bolt text-sm sm:text-base" style="color:#FF5722;"></i>
                     </div>
-                    <span class="text-2xl font-black" style="color:#FF8A5B;" id="stat-xp">–</span>
+                    <span class="text-xl sm:text-2xl font-black" style="color:#FF8A5B;" id="stat-xp">–</span>
                 </div>
-                <p class="text-xs font-semibold" style="color:rgba(255,255,255,.35);">Punti XP</p>
+                <p class="text-xs font-semibold leading-tight" style="color:rgba(255,255,255,.4);">Punti XP</p>
             </div>
             <div class="dash-stat-card">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(74,222,128,.1);">
-                        <i class="fas fa-check-circle" style="color:#4ADE80;"></i>
+                <div class="flex items-center justify-between mb-2 sm:mb-3">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center" style="background:rgba(74,222,128,.1);">
+                        <i class="fas fa-check-circle text-sm sm:text-base" style="color:#4ADE80;"></i>
                     </div>
-                    <span class="text-2xl font-black" style="color:#4ADE80;" id="stat-sfide">–</span>
+                    <span class="text-xl sm:text-2xl font-black" style="color:#4ADE80;" id="stat-sfide">–</span>
                 </div>
-                <p class="text-xs font-semibold" style="color:rgba(255,255,255,.35);">Sfide completate</p>
+                <p class="text-xs font-semibold leading-tight" style="color:rgba(255,255,255,.4);">Sfide</p>
             </div>
             <div class="dash-stat-card">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(167,139,250,.1);">
-                        <i class="fas fa-medal" style="color:#A78BFA;"></i>
+                <div class="flex items-center justify-between mb-2 sm:mb-3">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center" style="background:rgba(167,139,250,.1);">
+                        <i class="fas fa-medal text-sm sm:text-base" style="color:#A78BFA;"></i>
                     </div>
-                    <span class="text-2xl font-black" style="color:#A78BFA;" id="stat-badges">–</span>
+                    <span class="text-xl sm:text-2xl font-black" style="color:#A78BFA;" id="stat-badges">–</span>
                 </div>
-                <p class="text-xs font-semibold" style="color:rgba(255,255,255,.35);">Badge sbloccati</p>
+                <p class="text-xs font-semibold leading-tight" style="color:rgba(255,255,255,.4);">Badge</p>
             </div>
             <div class="dash-stat-card">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(251,191,36,.1);">
-                        <i class="fas fa-ticket-alt" style="color:#FBBF24;"></i>
+                <div class="flex items-center justify-between mb-2 sm:mb-3">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center" style="background:rgba(251,191,36,.1);">
+                        <i class="fas fa-ticket-alt text-sm sm:text-base" style="color:#FBBF24;"></i>
                     </div>
-                    <span class="text-2xl font-black" style="color:#FBBF24;" id="stat-coupon">–</span>
+                    <span class="text-xl sm:text-2xl font-black" style="color:#FBBF24;" id="stat-coupon">–</span>
                 </div>
-                <p class="text-xs font-semibold" style="color:rgba(255,255,255,.35);">Coupon attivi</p>
+                <p class="text-xs font-semibold leading-tight" style="color:rgba(255,255,255,.4);">Coupon</p>
             </div>
         </div>
 
         <!-- ── SFIDE ── -->
         <div class="dash-section glass-section overflow-hidden">
-            <div class="p-6" style="border-bottom:1px solid rgba(255,255,255,.06);">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
+            <div class="sec-header">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center min-w-0">
                         <span class="section-accent"></span>
-                        <div>
-                            <h2 class="font-display font-bold text-xl text-white">Sfide della Settimana</h2>
-                            <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.35);">Completa le sfide e guadagna XP</p>
+                        <div class="min-w-0">
+                            <h2 class="font-display font-bold text-lg sm:text-xl text-white">Sfide della Settimana</h2>
+                            <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.4);">Completa le sfide e guadagna XP</p>
                         </div>
                     </div>
-                    <div id="challenges-progress-pill" class="hidden sm:flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full" style="background:rgba(255,87,34,.12);color:#FF8A5B;border:1px solid rgba(255,87,34,.2);">
+                    <div id="challenges-progress-pill" class="hidden sm:flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-full flex-shrink-0" style="background:rgba(255,87,34,.12);color:#FF8A5B;border:1px solid rgba(255,87,34,.2);">
                         <i class="fas fa-trophy"></i><span id="ch-progress-text"></span>
                     </div>
                 </div>
             </div>
-            <div id="challenges-grid" class="p-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            <div id="challenges-grid" class="sec-body grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"></div>
         </div>
 
         <!-- ── COUPON WALLET ── -->
         <div class="dash-section glass-section overflow-hidden">
-            <div class="p-6" style="border-bottom:1px solid rgba(255,255,255,.06);">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
+            <div class="sec-header">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center min-w-0">
                         <span class="section-accent" style="background:linear-gradient(to bottom,#004B49,#1F6B52);"></span>
-                        <div>
-                            <h2 class="font-display font-bold text-xl text-white">Il Mio Wallet</h2>
-                            <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.35);">I tuoi coupon e le tue prenotazioni</p>
+                        <div class="min-w-0">
+                            <h2 class="font-display font-bold text-lg sm:text-xl text-white">Il Mio Wallet</h2>
+                            <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.4);">I tuoi coupon e le tue prenotazioni</p>
                         </div>
                     </div>
-                    <a href="index.html#sfide" class="text-sm font-bold flex items-center gap-1.5" style="color:#FF8A5B;">
-                        <i class="fas fa-plus-circle"></i>Ottieni coupon
+                    <a href="index.html#sfide" class="text-xs sm:text-sm font-bold flex items-center gap-1.5 flex-shrink-0" style="color:#FF8A5B;">
+                        <i class="fas fa-plus-circle"></i><span class="hidden sm:inline">Ottieni coupon</span><span class="sm:hidden">+</span>
                     </a>
                 </div>
             </div>
-            <div id="coupons-grid" class="p-6">
+            <div id="coupons-grid" class="sec-body">
                 <div id="coupons-empty" class="hidden text-center py-12">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
                         <i class="fas fa-wallet text-2xl" style="color:rgba(255,255,255,.15);"></i>
@@ -366,24 +393,24 @@
 
         <!-- ── GYM BUDDY ── -->
         <div class="dash-section glass-section overflow-hidden">
-            <div class="p-6" style="border-bottom:1px solid rgba(255,255,255,.06);">
+            <div class="sec-header">
                 <div class="flex items-center">
                     <span class="section-accent" style="background:linear-gradient(to bottom,#A78BFA,#8B5CF6);"></span>
-                    <div>
-                        <h2 class="font-display font-bold text-xl text-white">Gym Buddy Suggeriti</h2>
-                        <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.35);">Compagni di allenamento per te</p>
+                    <div class="min-w-0">
+                        <h2 class="font-display font-bold text-lg sm:text-xl text-white">Gym Buddy Suggeriti</h2>
+                        <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.4);">Compagni di allenamento per te</p>
                     </div>
                 </div>
             </div>
-            <div id="buddy-grid" class="p-6">
-                <div id="buddy-empty" class="hidden text-center py-12">
-                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
-                        <i class="fas fa-users text-2xl" style="color:rgba(255,255,255,.15);"></i>
+            <div id="buddy-grid" class="sec-body">
+                <div id="buddy-empty" class="hidden text-center py-10">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);">
+                        <i class="fas fa-users text-2xl" style="color:rgba(255,255,255,.2);"></i>
                     </div>
-                    <p class="font-medium text-gray-400">Nessun Gym Buddy disponibile</p>
-                    <p class="text-sm mt-1 text-gray-600">Invita altri partecipanti a registrarsi su Move Together!</p>
+                    <p class="font-medium text-gray-300">Nessun Gym Buddy disponibile</p>
+                    <p class="text-sm mt-1 text-gray-500">Invita altri partecipanti a registrarsi su Move Together!</p>
                 </div>
-                <div id="buddy-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                <div id="buddy-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"></div>
             </div>
         </div>
 
@@ -577,29 +604,34 @@
         }
 
         const diffStyle = {
-            'Facile':   'color:#4ADE80;background:rgba(74,222,128,.1);',
-            'Media':    'color:#FBBF24;background:rgba(251,191,36,.1);',
-            'Difficile':'color:#F87171;background:rgba(248,113,113,.1);'
+            'Facile':   'color:#4ADE80;background:rgba(74,222,128,.12);',
+            'Media':    'color:#FBBF24;background:rgba(251,191,36,.12);',
+            'Difficile':'color:#F87171;background:rgba(248,113,113,.12);'
         };
+        const iconColor = { 'Facile': '#4ADE80', 'Media': '#FBBF24', 'Difficile': '#F87171' };
+        const iconBg    = { 'Facile': 'rgba(74,222,128,.12)', 'Media': 'rgba(251,191,36,.12)', 'Difficile': 'rgba(248,113,113,.12)' };
 
         grid.innerHTML = challenges.map(ch => `
             <div class="ch-card ${ch.completata ? 'done' : ''}">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,.07);">
-                        <span class="text-xl">${ch.icon || '🏅'}</span>
+                <div class="flex items-start justify-between mb-3">
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                         style="background:${iconBg[ch.difficulty] || 'rgba(255,255,255,.1)'};">
+                        <i class="fas ${ch.icon || 'fa-medal'}"
+                           style="font-size:1.1rem;color:${iconColor[ch.difficulty] || '#FF8A5B'};"></i>
                     </div>
-                    <span class="text-xs font-bold px-2.5 py-1 rounded-full" style="${diffStyle[ch.difficulty] || diffStyle['Facile']}">${ch.difficulty}</span>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full flex-shrink-0"
+                          style="${diffStyle[ch.difficulty] || diffStyle['Facile']}">${ch.difficulty}</span>
                 </div>
-                <h3 class="font-bold text-white text-sm mb-1.5">${ch.title}</h3>
-                <p class="text-xs leading-relaxed mb-4" style="color:rgba(255,255,255,.4);">${ch.description}</p>
+                <h3 class="font-bold text-white text-sm mb-1.5 text-safe">${ch.title}</h3>
+                <p class="text-xs leading-relaxed mb-3 flex-1" style="color:rgba(255,255,255,.45);">${ch.description}</p>
                 <div class="flex items-center gap-2 mb-3 flex-wrap">
-                    <span class="text-xs font-bold px-2 py-1 rounded-lg" style="color:#FF8A5B;background:rgba(255,87,34,.1);">+${ch.xp} XP</span>
-                    <span class="text-xs font-bold px-2 py-1 rounded-lg" style="color:#A78BFA;background:rgba(167,139,250,.1);">${ch.badge} ${ch.badgeName}</span>
+                    <span class="text-xs font-bold px-2 py-1 rounded-lg" style="color:#FF8A5B;background:rgba(255,87,34,.12);">+${ch.xp} XP</span>
+                    <span class="text-xs font-bold px-2 py-1 rounded-lg" style="color:#A78BFA;background:rgba(167,139,250,.12);">${ch.badge} ${ch.badgeName}</span>
                 </div>
-                <div class="flex justify-end pt-1" style="border-top:1px solid rgba(255,255,255,.06);">
+                <div class="flex justify-end pt-2" style="border-top:1px solid rgba(255,255,255,.08);margin-top:auto;">
                     ${ch.completata
                         ? `<span class="text-xs font-black flex items-center gap-1.5" style="color:#4ADE80;"><i class="fas fa-check-circle"></i>Completata</span>`
-                        : `<button onclick="completeChallenge(${ch.id})" class="text-xs font-bold text-white px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 hover:opacity-90" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);">
+                        : `<button onclick="completeChallenge(${ch.id})" class="text-xs font-bold text-white px-4 py-2 rounded-xl transition-all flex items-center gap-1.5" style="background:linear-gradient(135deg,#FF5722,#FF8A5B);box-shadow:0 4px 14px rgba(255,87,34,.25);" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
                                <i class="fas fa-plus"></i>Segna completata
                            </button>`
                     }
